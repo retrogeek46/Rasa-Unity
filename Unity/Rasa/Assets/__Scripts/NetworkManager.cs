@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,6 +23,11 @@ public struct PostData {
 public class RecieveData {
     public string recipient_id;
     public string text;
+    public string image;
+    public string attachemnt;
+    public string buttons;
+    public string elements;
+    public string quick_replies;
 }
 
 /// <summary>
@@ -76,6 +82,24 @@ public class NetworkManager : MonoBehaviour {
         RootMessages recieveMessages = 
             JsonUtility.FromJson<RootMessages>("{\"messages\":" + response + "}");
         botUI.UpdateDisplay("Bot", recieveMessages.messages[0].text);
+    }
+
+    public void RecieveMessageTest (string response) {
+        // Deserialize response recieved from the bot
+        Debug.Log("recieved message : " + response);
+        RootMessages recieveMessages =
+            JsonUtility.FromJson<RootMessages>("{\"messages\":" + response + "}");
+
+        // show message based on message type on UI
+        for (int i = 0; i < recieveMessages.messages.Length; i++) {
+            print("looping : " + i);
+            PropertyInfo[] properties = recieveMessages.messages[i].GetType().GetProperties();
+            print(properties.Length);
+            foreach (PropertyInfo property in properties) {
+                print("recieved : " + property.GetValue(recieveMessages.messages[i]));
+                botUI.UpdateDisplay("Bot", "Under construction");
+            }
+        }
     }
 
     /// <summary>
