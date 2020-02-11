@@ -38,17 +38,6 @@ public class RootMessages {
     public RecieveData[] messages;
 }
 
-public static class TextureExtentions {
-    public static Texture2D ToTexture2D (this Texture texture) {
-        return Texture2D.CreateExternalTexture(
-            texture.width,
-            texture.height,
-            TextureFormat.RGB24,
-            false, false,
-            texture.GetNativeTexturePtr());
-    }
-}
-
 /// <summary>
 /// This class handles all the requests and serialization and
 /// deserialization of data.
@@ -148,7 +137,10 @@ public class NetworkManager : MonoBehaviour {
             // Create Texture2D from Texture object
             Texture texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
             Texture2D texture2D = texture.ToTexture2D();
-            
+            texture2D.Apply();
+            print(texture2D.isReadable);
+            texture2D.GetPixels();
+
             // set max size for image width and height based on texture dimensions
             float imageWidth = 0, imageHeight = 0, texWidth = texture2D.width, texHeight = texture2D.height;
             if ((texture2D.width > texture2D.height) && texHeight > 0) {
@@ -165,6 +157,7 @@ public class NetworkManager : MonoBehaviour {
                 float ratio = texHeight / imageHeight;
                 imageWidth = texWidth/ ratio;
             }
+
             //print("Image dimensions : " + imageWidth + ", " + imageHeight);
             //texture2D.Resize((int)imageWidth, (int)imageHeight);
             //texture2D.Apply();
@@ -172,13 +165,17 @@ public class NetworkManager : MonoBehaviour {
             //tex.SetPixels(texture2D.GetPixels());
             //tex.Apply();
 
-            //TextureScale.Bilinear(texture2D, (int)imageWidth, (int)imageHeight);
+            TextureScale.Bilinear(texture2D, (int)imageWidth, (int)imageHeight);
 
             image.sprite = Sprite.Create(
                 texture2D, 
                 new Rect(0.0f, 0.0f, texture2D.width, texture2D.height), 
                 new Vector2(0.5f, 0.5f), 100.0f);
-            //image.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+
+            //image.sprite = Sprite.Create(
+            //    tex, 
+            //    new Rect(0.0f, 0.0f, tex.width, tex.height), 
+            //    new Vector2(0.5f, 0.5f), 100.0f);
         }
     }
 }

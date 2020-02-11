@@ -1,4 +1,5 @@
-﻿// Only works on ARGB32, RGB24 and Alpha8 textures that are marked readable
+﻿// This code sample has been taken from  http://wiki.unity3d.com/index.php/TextureScale
+// Only works on ARGB32, RGB24 and Alpha8 textures that are marked readable
 
 using System.Threading;
 using UnityEngine;
@@ -13,8 +14,8 @@ public class TextureScale {
 		}
 	}
 
-	private static Color[] texColors;
-	private static Color[] newColors;
+	private static Color32[] texColors;
+	private static Color32[] newColors;
 	private static int w;
 	private static float ratioX;
 	private static float ratioY;
@@ -31,8 +32,8 @@ public class TextureScale {
 	}
 
 	private static void ThreadedScale (Texture2D tex, int newWidth, int newHeight, bool useBilinear) {
-		texColors = tex.GetPixels();
-		newColors = new Color[newWidth * newHeight];
+		texColors = tex.GetPixels32();
+		newColors = new Color32[newWidth * newHeight];
 		if (useBilinear) {
 			ratioX = 1.0f / ((float)newWidth / (tex.width - 1));
 			ratioY = 1.0f / ((float)newHeight / (tex.height - 1));
@@ -77,7 +78,7 @@ public class TextureScale {
 		}
 
 		tex.Resize(newWidth, newHeight);
-		tex.SetPixels(newColors);
+		tex.SetPixels32(newColors);
 		tex.Apply();
 
 		texColors = null;
