@@ -79,10 +79,26 @@ public class NetworkManager : MonoBehaviour {
     /// </summary>
     /// <param name="response">The response json recieved from the bot</param>
     public void RecieveMessage (string response) {
-        // Show bot message on BotUI
+        // Deserialize response recieved from the bot and show on UI
+        Debug.Log("recieved message : " + response);
         RootMessages recieveMessages = 
             JsonUtility.FromJson<RootMessages>("{\"messages\":" + response + "}");
-        botUI.UpdateDisplay("Bot", recieveMessages.messages[0].text);
+        foreach (RecieveData message in recieveMessages.messages) {
+            FieldInfo[] fields = typeof(RecieveData).GetFields();
+            //print("properties count is : " + fields.Length);
+            foreach (FieldInfo field in fields) {
+                string data = null;
+                try {
+                    data = field.GetValue(message).ToString();
+                } catch (NullReferenceException) {
+                    Debug.Log("No data");
+                }
+                if (data != null && field.Name != "recipient_id") {
+                    print("getting data for : " + field.Name);
+                    botUI.UpdateDisplay("Bot", data);
+                }
+            }
+        }
     }
 
     public void RecieveMessageTest (string response) {
