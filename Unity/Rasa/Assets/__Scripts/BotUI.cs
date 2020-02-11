@@ -33,26 +33,22 @@ public class BotUI : MonoBehaviour {
     }
 
     private GameObject CreateChatBubble (string sender) {
+        GameObject chat = null;
         if (sender == "Doku") {
             // Create user chat bubble from prefabs and set it's position
-            GameObject userChat = Instantiate(userBubble);
-            userChat.transform.SetParent(display.transform, false);
-            RectTransform userPos = userChat.GetComponent<RectTransform>();
+            chat = Instantiate(userBubble);
+            chat.transform.SetParent(display.transform, false);
+            RectTransform userPos = chat.GetComponent<RectTransform>();
             userPos.anchoredPosition3D = new Vector3(-20, -50 * (messageCounter + 1), 0);
-            messageCounter++;
-
-            // Add component based on 
-            return userChat.transform.GetChild(0).gameObject;
         } else if (sender == "Bot") {
             // Create bot chat bubble from prefabs and set it's position
-            GameObject botChat = Instantiate(botBubble);
-            botChat.transform.SetParent(display.transform, false);
-            RectTransform botPos = botChat.GetComponent<RectTransform>();
+            chat = Instantiate(botBubble);
+            chat.transform.SetParent(display.transform, false);
+            RectTransform botPos = chat.GetComponent<RectTransform>();
             botPos.anchoredPosition3D = new Vector3(20, -50 * (messageCounter + 1), 0);
-            messageCounter++;
-            return botChat.transform.GetChild(0).gameObject;
         }
-        return null;
+        messageCounter++;
+        return chat.transform.GetChild(0).gameObject;
     }
 
     private void AddChatComponent (GameObject chatBubble, string message, string messageType) {
@@ -60,11 +56,13 @@ public class BotUI : MonoBehaviour {
             case "text":
                 Text chatMessage = chatBubble.AddComponent<Text>();
                 chatMessage.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
-                chatMessage.fontSize = 14;
-                chatMessage.alignment = TextAnchor.UpperLeft;
+                chatMessage.fontSize = 1;
+                chatMessage.alignment = TextAnchor.MiddleLeft;
                 chatMessage.text = message;
                 break;
             case "image":
+                RawImage chatImage = chatBubble.AddComponent<RawImage>();
+                StartCoroutine(NetworkManager.SetImageTextureFromUrl(message, chatImage));
                 break;
             case "attachment":
                 break;
@@ -76,4 +74,6 @@ public class BotUI : MonoBehaviour {
                 break;
         }
     }
+
+
 }

@@ -122,4 +122,13 @@ public class NetworkManager : MonoBehaviour {
         // Show response on UI
         RecieveMessage(request.downloadHandler.text);
     }
+
+    public static IEnumerator SetImageTextureFromUrl (string url, RawImage image) {
+        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+        yield return request.SendWebRequest();
+        if (request.isNetworkError || request.isHttpError)
+            Debug.Log(request.error);
+        else
+            image.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+    }
 }
