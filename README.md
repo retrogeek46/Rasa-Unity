@@ -32,6 +32,6 @@ __WIP__, the source code is commented though.
 
 ## TODO
 1. Add scroll support
-2. Resize chat bubbles based on size of content (text, image)
+2. ~~resize chat bubbles based on size of content (text, image)~~
 3. Render buttons and quick replies
 4. Add support for custom data
