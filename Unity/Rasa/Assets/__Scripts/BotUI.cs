@@ -11,10 +11,11 @@ public class BotUI : MonoBehaviour {
     public GameObject   display;        // Text gameobject where all the conversation is shown
     public InputField   input;          // InputField gameobject wher user types their message
 
-    public GameObject   userBubble;
-    public GameObject   botBubble;
+    public GameObject   userBubble;     // reference to user chat bubble prefab
+    public GameObject   botBubble;      // reference to bot chat bubble prefab
 
     private int messageCounter = 0;
+    private int messageHeight = 0;      // int to keep track of where next message should be rendered
 
     /// <summary>
     /// This method is used to update the display text object with the

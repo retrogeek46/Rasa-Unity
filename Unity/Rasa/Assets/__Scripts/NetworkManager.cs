@@ -1,42 +1,9 @@
 ﻿using System;
 using System.Reflection;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
-
-/// <summary>
-/// This class is used to serialize users message into a json
-/// object which can be sent over http request to the bot.
-/// </summary>
-public struct PostData {
-    public string message;
-    public string sender;
-}
-
-/// <summary>
-/// This class is used to deserialize the resonse json for each
-/// individual message.
-/// </summary>
-[Serializable]
-public class RecieveData {
-    public string recipient_id;
-    public string text;
-    public string image;
-    public string attachemnt;
-    public string button;
-    public string element;
-    public string quick_replie;
-}
-
-/// <summary>
-/// This class is a wrapper for individual messages sent by the bot.
-/// </summary>
-[Serializable]
-public class RootMessages {
-    public RecieveData[] messages;
-}
 
 /// <summary>
 /// This class handles all the requests and serialization and
@@ -87,11 +54,12 @@ public class NetworkManager : MonoBehaviour {
             FieldInfo[] fields = typeof(RecieveData).GetFields();
             foreach (FieldInfo field in fields) {
                 string data = null;
-                // extract data from response in try-catch for 
-                // handling null exceptions
+                
+                // extract data from response in try-catch for handling null exceptions
                 try {
                     data = field.GetValue(message).ToString();
                 } catch (NullReferenceException) {}
+                
                 // print data
                 if (data != null && field.Name != "recipient_id") {
                     botUI.UpdateDisplay("Bot", data, field.Name);
@@ -129,19 +97,20 @@ public class NetworkManager : MonoBehaviour {
     /// <param name="image">RawImage object on which the texture will be applied</param>
     /// <returns></returns>
     public static IEnumerator SetImageTextureFromUrl (string url, Image image) {
+        // Send request to get the image resource
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
         yield return request.SendWebRequest();
+        
         if (request.isNetworkError || request.isHttpError)
+            // image could not be retrieved
             Debug.Log(request.error);
+        
         else {
             // Create Texture2D from Texture object
             Texture texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
             Texture2D texture2D = texture.ToTexture2D();
-            texture2D.Apply();
-            print(texture2D.isReadable);
-            texture2D.GetPixels();
 
-            // set max size for image width and height based on texture dimensions
+            // set max size for image width and height based on chat size limits
             float imageWidth = 0, imageHeight = 0, texWidth = texture2D.width, texHeight = texture2D.height;
             if ((texture2D.width > texture2D.height) && texHeight > 0) {
                 // Landscape image
@@ -158,24 +127,13 @@ public class NetworkManager : MonoBehaviour {
                 imageWidth = texWidth/ ratio;
             }
 
-            //print("Image dimensions : " + imageWidth + ", " + imageHeight);
-            //texture2D.Resize((int)imageWidth, (int)imageHeight);
-            //texture2D.Apply();
-            //Texture2D tex = new Texture2D((int)imageWidth, (int)imageHeight);
-            //tex.SetPixels(texture2D.GetPixels());
-            //tex.Apply();
-
+            // Resize texture to chat size limits and attach to message 
+            // Image object as sprite
             TextureScale.Bilinear(texture2D, (int)imageWidth, (int)imageHeight);
-
             image.sprite = Sprite.Create(
                 texture2D, 
                 new Rect(0.0f, 0.0f, texture2D.width, texture2D.height), 
                 new Vector2(0.5f, 0.5f), 100.0f);
-
-            //image.sprite = Sprite.Create(
-            //    tex, 
-            //    new Rect(0.0f, 0.0f, tex.width, tex.height), 
-            //    new Vector2(0.5f, 0.5f), 100.0f);
         }
     }
 }
