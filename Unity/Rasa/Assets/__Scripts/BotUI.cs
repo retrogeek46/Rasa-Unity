@@ -33,6 +33,11 @@ public class BotUI : MonoBehaviour {
         input.ActivateInputField();
     }
 
+    /// <summary>
+    /// This method creates chat bubbles from prefabs and sets their positions.
+    /// </summary>
+    /// <param name="sender">The sender of message for which bubble is rendered</param>
+    /// <returns>Reference to empty gameobject on which message components can be added</returns>
     private GameObject CreateChatBubble (string sender) {
         GameObject chat = null;
         if (sender == "Doku") {
@@ -73,9 +78,16 @@ public class BotUI : MonoBehaviour {
         return chat.transform.GetChild(0).gameObject;
     }
 
+    /// <summary>
+    /// This method adds message component to chat bubbles based on message type.
+    /// </summary>
+    /// <param name="chatBubbleObject">The empty gameobject under chat bubble</param>
+    /// <param name="message">message to be shown</param>
+    /// <param name="messageType">The type of message (text, image etc)</param>
     private void AddChatComponent (GameObject chatBubbleObject, string message, string messageType) {
         switch (messageType) {
             case "text":
+                // Create and init Text component
                 Text chatMessage = chatBubbleObject.AddComponent<Text>();
                 chatMessage.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
                 chatMessage.fontSize = 18;
@@ -83,17 +95,8 @@ public class BotUI : MonoBehaviour {
                 chatMessage.text = message;
                 break;
             case "image":
-                // disable content size fitter and 
-                //GameObject parentChatBubble = chatBubbleObject.transform.parent.gameObject;
-                //Destroy(parentChatBubble.GetComponent<ContentSizeFitter>());
-                //Destroy(parentChatBubble.GetComponent<VerticalLayoutGroup>());
-
+                // Create and init Image component
                 Image chatImage = chatBubbleObject.AddComponent<Image>();
-                //chatImage.rectTransform.sizeDelta = new Vector2(150, 100);
-
-                //Image img = chatBubbleObject.GetComponent<Image>();
-                //img.rectTransform.sizeDelta = new Vector2(120, 70);
-
                 StartCoroutine(NetworkManager.SetImageTextureFromUrl(message, chatImage));
                 break;
             case "attachment":
