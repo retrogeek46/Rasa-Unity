@@ -15,7 +15,7 @@ public class BotUI : MonoBehaviour {
     public GameObject   botBubble;      // reference to bot chat bubble prefab
 
     private int messageCounter = 0;
-    private int messageHeight = 0;      // int to keep track of where next message should be rendered
+    private int messageHeight = 15;      // int to keep track of where next message should be rendered
 
     /// <summary>
     /// This method is used to update the display text object with the
@@ -25,11 +25,21 @@ public class BotUI : MonoBehaviour {
     /// <param name="message">The message</param>
     public void UpdateDisplay (string sender, string message, string messageType) {
         // create chat bubble and add components
-        GameObject chatBubble = CreateChatBubble(sender);
-        AddChatComponent(chatBubble, message, messageType);
+        GameObject chatBubbleChildObject = CreateChatBubble(sender);
+        AddChatComponent(chatBubbleChildObject, message, messageType);
+
+        // set the chat bubble in correct place
+        RectTransform chatBubblePos = 
+            chatBubbleChildObject.transform.parent.gameObject.GetComponent<RectTransform>();
+        messageHeight += 15 + (int)chatBubblePos.sizeDelta.y;
+        chatBubblePos.anchoredPosition3D = new Vector3(
+            chatBubblePos.anchoredPosition3D.x, 
+            -messageHeight,
+            0);
+
 
         // Set focus on input field
-        input.Select();
+        //input.Select();
         input.ActivateInputField();
     }
 
@@ -67,10 +77,6 @@ public class BotUI : MonoBehaviour {
             verticalLayout.padding = new RectOffset(20, 10, 5, 5);
         }
         verticalLayout.childAlignment = TextAnchor.MiddleCenter;
-
-        //// Add horizontal layout group
-        //HorizontalLayoutGroup horizontalLayout = chat.AddComponent<HorizontalLayoutGroup>();
-        //horizontalLayout.childAlignment = TextAnchor.MiddleCenter;
 
         // increment counter and return reference to empty gameobject on which
         // components can be added.
