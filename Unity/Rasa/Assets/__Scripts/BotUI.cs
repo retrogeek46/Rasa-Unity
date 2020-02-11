@@ -47,21 +47,52 @@ public class BotUI : MonoBehaviour {
             RectTransform botPos = chat.GetComponent<RectTransform>();
             botPos.anchoredPosition3D = new Vector3(20, -50 * (messageCounter + 1), 0);
         }
+
+        // Add content size fitter
+        ContentSizeFitter chatSize = chat.AddComponent<ContentSizeFitter>();
+        chatSize.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+        chatSize.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+        // Add vertical layout group
+        VerticalLayoutGroup verticalLayout = chat.AddComponent<VerticalLayoutGroup>();
+        if (sender == "Doku") {
+            verticalLayout.padding = new RectOffset(10, 20, 5, 5);
+        } else if (sender == "Bot") {
+            verticalLayout.padding = new RectOffset(20, 10, 5, 5);
+        }
+        verticalLayout.childAlignment = TextAnchor.MiddleCenter;
+
+        //// Add horizontal layout group
+        //HorizontalLayoutGroup horizontalLayout = chat.AddComponent<HorizontalLayoutGroup>();
+        //horizontalLayout.childAlignment = TextAnchor.MiddleCenter;
+
+        // increment counter and return reference to empty gameobject on which
+        // components can be added.
         messageCounter++;
         return chat.transform.GetChild(0).gameObject;
     }
 
-    private void AddChatComponent (GameObject chatBubble, string message, string messageType) {
+    private void AddChatComponent (GameObject chatBubbleObject, string message, string messageType) {
         switch (messageType) {
             case "text":
-                Text chatMessage = chatBubble.AddComponent<Text>();
+                Text chatMessage = chatBubbleObject.AddComponent<Text>();
                 chatMessage.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
-                chatMessage.fontSize = 1;
+                chatMessage.fontSize = 18;
                 chatMessage.alignment = TextAnchor.MiddleLeft;
                 chatMessage.text = message;
                 break;
             case "image":
-                RawImage chatImage = chatBubble.AddComponent<RawImage>();
+                // disable content size fitter and 
+                //GameObject parentChatBubble = chatBubbleObject.transform.parent.gameObject;
+                //Destroy(parentChatBubble.GetComponent<ContentSizeFitter>());
+                //Destroy(parentChatBubble.GetComponent<VerticalLayoutGroup>());
+
+                Image chatImage = chatBubbleObject.AddComponent<Image>();
+                //chatImage.rectTransform.sizeDelta = new Vector2(150, 100);
+
+                //Image img = chatBubbleObject.GetComponent<Image>();
+                //img.rectTransform.sizeDelta = new Vector2(120, 70);
+
                 StartCoroutine(NetworkManager.SetImageTextureFromUrl(message, chatImage));
                 break;
             case "attachment":
@@ -74,6 +105,4 @@ public class BotUI : MonoBehaviour {
                 break;
         }
     }
-
-
 }

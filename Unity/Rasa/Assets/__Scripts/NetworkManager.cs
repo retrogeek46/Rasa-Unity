@@ -38,6 +38,17 @@ public class RootMessages {
     public RecieveData[] messages;
 }
 
+public static class TextureExtentions {
+    public static Texture2D ToTexture2D (this Texture texture) {
+        return Texture2D.CreateExternalTexture(
+            texture.width,
+            texture.height,
+            TextureFormat.RGB24,
+            false, false,
+            texture.GetNativeTexturePtr());
+    }
+}
+
 /// <summary>
 /// This class handles all the requests and serialization and
 /// deserialization of data.
@@ -47,7 +58,6 @@ public class NetworkManager : MonoBehaviour {
     public BotUI            botUI;
     // the url at which the bot's custom component is hosted
     private const string    rasa_url = "http://127.0.0.1:5005/webhooks/unity/webhook";
-
 
     /// <summary>
     /// This method is called when user has entered their message and hits
@@ -123,12 +133,52 @@ public class NetworkManager : MonoBehaviour {
         RecieveMessage(request.downloadHandler.text);
     }
 
-    public static IEnumerator SetImageTextureFromUrl (string url, RawImage image) {
+    /// <summary>
+    /// This method gets url resource from link and applies it to the passed texture.
+    /// </summary>
+    /// <param name="url">url where the image resource is located</param>
+    /// <param name="image">RawImage object on which the texture will be applied</param>
+    /// <returns></returns>
+    public static IEnumerator SetImageTextureFromUrl (string url, Image image) {
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
         yield return request.SendWebRequest();
         if (request.isNetworkError || request.isHttpError)
             Debug.Log(request.error);
-        else
-            image.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+        else {
+            // Create Texture2D from Texture object
+            Texture texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+            Texture2D texture2D = texture.ToTexture2D();
+            
+            // set max size for image width and height based on texture dimensions
+            float imageWidth = 0, imageHeight = 0, texWidth = texture2D.width, texHeight = texture2D.height;
+            if ((texture2D.width > texture2D.height) && texHeight > 0) {
+                // Landscape image
+                imageWidth = texWidth;
+                if (imageWidth > 200) imageWidth = 200;
+                float ratio = texWidth / imageWidth;
+                imageHeight = texHeight / ratio;
+            }
+            if ((texture2D.width < texture2D.height) && texWidth > 0) {
+                // Portrait image
+                imageHeight = texHeight;
+                if (imageHeight > 200) imageHeight = 200;
+                float ratio = texHeight / imageHeight;
+                imageWidth = texWidth/ ratio;
+            }
+            //print("Image dimensions : " + imageWidth + ", " + imageHeight);
+            //texture2D.Resize((int)imageWidth, (int)imageHeight);
+            //texture2D.Apply();
+            //Texture2D tex = new Texture2D((int)imageWidth, (int)imageHeight);
+            //tex.SetPixels(texture2D.GetPixels());
+            //tex.Apply();
+
+            //TextureScale.Bilinear(texture2D, (int)imageWidth, (int)imageHeight);
+
+            image.sprite = Sprite.Create(
+                texture2D, 
+                new Rect(0.0f, 0.0f, texture2D.width, texture2D.height), 
+                new Vector2(0.5f, 0.5f), 100.0f);
+            //image.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+        }
     }
 }
