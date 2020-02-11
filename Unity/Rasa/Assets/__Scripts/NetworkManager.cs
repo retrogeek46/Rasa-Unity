@@ -25,9 +25,9 @@ public class RecieveData {
     public string text;
     public string image;
     public string attachemnt;
-    public string buttons;
-    public string elements;
-    public string quick_replies;
+    public string button;
+    public string element;
+    public string quick_replie;
 }
 
 /// <summary>
@@ -68,7 +68,7 @@ public class NetworkManager : MonoBehaviour {
         string jsonBody = JsonUtility.ToJson(postMessage);
 
         // Update display
-        botUI.UpdateDisplay("Doku", message);
+        botUI.UpdateDisplay("Doku", message, "text");
 
         // Create a post request with the data to send to Rasa server
         StartCoroutine(PostRequest(rasa_url, jsonBody));
@@ -79,42 +79,24 @@ public class NetworkManager : MonoBehaviour {
     /// </summary>
     /// <param name="response">The response json recieved from the bot</param>
     public void RecieveMessage (string response) {
-        // Deserialize response recieved from the bot and show on UI
-        Debug.Log("recieved message : " + response);
-        RootMessages recieveMessages = 
-            JsonUtility.FromJson<RootMessages>("{\"messages\":" + response + "}");
-        foreach (RecieveData message in recieveMessages.messages) {
-            FieldInfo[] fields = typeof(RecieveData).GetFields();
-            //print("properties count is : " + fields.Length);
-            foreach (FieldInfo field in fields) {
-                string data = null;
-                try {
-                    data = field.GetValue(message).ToString();
-                } catch (NullReferenceException) {
-                    Debug.Log("No data");
-                }
-                if (data != null && field.Name != "recipient_id") {
-                    print("getting data for : " + field.Name);
-                    botUI.UpdateDisplay("Bot", data);
-                }
-            }
-        }
-    }
-
-    public void RecieveMessageTest (string response) {
         // Deserialize response recieved from the bot
-        Debug.Log("recieved message : " + response);
-        RootMessages recieveMessages =
+        RootMessages recieveMessages = 
             JsonUtility.FromJson<RootMessages>("{\"messages\":" + response + "}");
 
         // show message based on message type on UI
-        for (int i = 0; i < recieveMessages.messages.Length; i++) {
-            print("looping : " + i);
-            PropertyInfo[] properties = recieveMessages.messages[i].GetType().GetProperties();
-            print(properties.Length);
-            foreach (PropertyInfo property in properties) {
-                print("recieved : " + property.GetValue(recieveMessages.messages[i]));
-                botUI.UpdateDisplay("Bot", "Under construction");
+        foreach (RecieveData message in recieveMessages.messages) {
+            FieldInfo[] fields = typeof(RecieveData).GetFields();
+            foreach (FieldInfo field in fields) {
+                string data = null;
+                // extract data from response in try-catch for 
+                // handling null exceptions
+                try {
+                    data = field.GetValue(message).ToString();
+                } catch (NullReferenceException) {}
+                // print data
+                if (data != null && field.Name != "recipient_id") {
+                    botUI.UpdateDisplay("Bot", data, field.Name);
+                }
             }
         }
     }
