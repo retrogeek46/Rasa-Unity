@@ -40,3 +40,5 @@ __WIP__, the source code is commented though.
 4. Add support for custom data
 5. Render messages in order, wait for image loads
 6. Add docs
+7. Add delay between messages
+8. Add animations before showing messages
