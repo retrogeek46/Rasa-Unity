@@ -6,7 +6,7 @@ This is a tutorial to show how one can integrate Rasa chatbots with Unity.
 Currently no work on chatbot has been done except implementing the custom connector. Chatbot is trained on the Mood bot data that is created after `rasa init` command.
 
 ## Installation
-First, clone this repo using `git clone https://github.com/retrogeek46/Rasa-Unity` and checkout to v0.1.0.
+First, clone this repo using `git clone https://github.com/retrogeek46/Rasa-Unity` and checkout to v0.2.0.
 ### Rasa
 - Change directory into Rasa/ and create a virtual environemt using  
 `python -m venv venv`
@@ -19,7 +19,7 @@ Linux : `source venv/bin/activate`
 `python -m spacy download en_core_web_md`  
 `python -m spacy link en_core_web_md en`
 - Run rasa server using  
-`rasa run --debug`
+`rasa run`
 ### Unity
 - The Unity project was made using 2019.3 hence is the recommended version.
 - Open Unity Hub and choose "Add" from top right corner.
@@ -31,7 +31,7 @@ Linux : `source venv/bin/activate`
 __WIP__, the source code is commented though.
 
 ## TODO
-1. Add scroll support
+1. ~~Add scroll support~~
 2. ~~resize chat bubbles based on size of content (text, image)~~
 3. Render buttons and quick replies
 4. Add support for custom data

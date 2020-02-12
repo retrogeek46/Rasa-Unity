@@ -39,7 +39,7 @@ public class BotUI : MonoBehaviour {
     }
 
     /// <summary>
-    /// This method sets the position of the chat bubble inside the contentDisplayObject
+    /// Coroutine to set the position of the chat bubble inside the contentDisplayObject.
     /// </summary>
     /// <param name="chatBubblePos">RectTransform of chat bubble</param>
     /// <param name="sender">Sender who sent the message</param>
@@ -57,7 +57,6 @@ public class BotUI : MonoBehaviour {
 
         // set the chat bubble in correct place
         allMessagesHeight += 15 + (int)chatBubblePos.sizeDelta.y;
-        //print("message height is : " + messageHeight + ", bubble : " + chatBubblePos.sizeDelta.y);
         chatBubblePos.anchoredPosition3D = new Vector3(horizontalPos, -allMessagesHeight, 0);
 
         if (allMessagesHeight > 340) {
@@ -68,6 +67,9 @@ public class BotUI : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Coroutine to update chat bubble positions based on their size.
+    /// </summary>
     public IEnumerator RefreshChatBubblePosition () {
         // Wait for end of frame before calculating UI transform
         yield return new WaitForEndOfFrame();
