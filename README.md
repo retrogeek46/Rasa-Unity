@@ -30,8 +30,13 @@ Linux : `source venv/bin/activate`
 ## Docs
 __WIP__, the source code is commented though.
 
+## Known Bugs
+1. Clicking anywhere sends empty requests
+
 ## TODO
 1. ~~Add scroll support~~
 2. ~~resize chat bubbles based on size of content (text, image)~~
 3. Render buttons and quick replies
 4. Add support for custom data
+5. Render messages in order, wait for image loads
+6. Add docs
