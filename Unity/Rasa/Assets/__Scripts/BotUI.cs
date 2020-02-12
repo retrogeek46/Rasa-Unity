@@ -8,39 +8,62 @@ using UnityEngine.UI;
 /// with the UI.
 /// </summary>
 public class BotUI : MonoBehaviour {
-    public GameObject   display;        // Text gameobject where all the conversation is shown
-    public InputField   input;          // InputField gameobject wher user types their message
+    public GameObject   contetnDisplayObject;       // Text gameobject where all the conversation is shown
+    public InputField   input;                      // InputField gameobject wher user types their message
 
-    public GameObject   userBubble;     // reference to user chat bubble prefab
-    public GameObject   botBubble;      // reference to bot chat bubble prefab
+    public GameObject   userBubble;                 // reference to user chat bubble prefab
+    public GameObject   botBubble;                  // reference to bot chat bubble prefab
 
-    private int messageCounter = 0;
-    private int messageHeight = 15;      // int to keep track of where next message should be rendered
+    private const int messagePadding = 15;          // space between chat bubbles 
+    private int messageHeight = messagePadding;     // int to keep track of where next message should be rendered
+    public bool increaseContentObjectHeight;        // bool to check if content object height should be increased
+
 
     /// <summary>
-    /// This method is used to update the display text object with the
-    /// user's and bot's messages.
+    /// This method is used to update the display text object with the user's and bot's messages.
     /// </summary>
     /// <param name="sender">The one who wrote this message</param>
     /// <param name="message">The message</param>
     public void UpdateDisplay (string sender, string message, string messageType) {
-        // create chat bubble and add components
-        GameObject chatBubbleChildObject = CreateChatBubble(sender);
-        AddChatComponent(chatBubbleChildObject, message, messageType);
+        // Create chat bubble and add components
+        GameObject chatBubbleChild = CreateChatBubble(sender);
+        AddChatComponent(chatBubbleChild, message, messageType);
 
-        // set the chat bubble in correct place
-        RectTransform chatBubblePos = 
-            chatBubbleChildObject.transform.parent.gameObject.GetComponent<RectTransform>();
-        messageHeight += 15 + (int)chatBubblePos.sizeDelta.y;
-        chatBubblePos.anchoredPosition3D = new Vector3(
-            chatBubblePos.anchoredPosition3D.x, 
-            -messageHeight,
-            0);
-
+        // Set chat bubble position
+        SetChatBubblePosition(chatBubbleChild.transform.parent.GetComponent<RectTransform>(), sender);
 
         // Set focus on input field
-        //input.Select();
+        input.Select();
         input.ActivateInputField();
+    }
+
+    /// <summary>
+    /// This method sets the position of the chat bubble inside the contentDisplayObject
+    /// </summary>
+    /// <param name="chatBubblePos">RectTransform of chat bubble</param>
+    /// <param name="sender">Sender who sent the message</param>
+    private void SetChatBubblePosition (RectTransform chatBubblePos, string sender) {
+        // get horizontal position based on sender
+        int horizontalPos = 0;
+        if (sender == "Doku") {
+            horizontalPos = -20;
+        } else if (sender == "Bot") {
+            horizontalPos = 20;
+        }
+
+        // set the chat bubble in correct place
+        messageHeight += 15 + (int)chatBubblePos.sizeDelta.y;
+        chatBubblePos.anchoredPosition3D = new Vector3(horizontalPos, -messageHeight, 0);
+
+        if (messageHeight > 340) {
+            // update contentDisplayObject hieght
+            RectTransform contentRect = contetnDisplayObject.GetComponent<RectTransform>();
+            contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, messageHeight + messagePadding);
+        }
+    }
+
+    public void RefreshChatBubblePosition (GameObject display) { 
+        // refresh position of all gameobjects based on size
     }
 
     /// <summary>
@@ -53,15 +76,11 @@ public class BotUI : MonoBehaviour {
         if (sender == "Doku") {
             // Create user chat bubble from prefabs and set it's position
             chat = Instantiate(userBubble);
-            chat.transform.SetParent(display.transform, false);
-            RectTransform userPos = chat.GetComponent<RectTransform>();
-            userPos.anchoredPosition3D = new Vector3(-20, -50 * (messageCounter + 1), 0);
+            chat.transform.SetParent(contetnDisplayObject.transform, false);
         } else if (sender == "Bot") {
             // Create bot chat bubble from prefabs and set it's position
             chat = Instantiate(botBubble);
-            chat.transform.SetParent(display.transform, false);
-            RectTransform botPos = chat.GetComponent<RectTransform>();
-            botPos.anchoredPosition3D = new Vector3(20, -50 * (messageCounter + 1), 0);
+            chat.transform.SetParent(contetnDisplayObject.transform, false);
         }
 
         // Add content size fitter
@@ -78,9 +97,7 @@ public class BotUI : MonoBehaviour {
         }
         verticalLayout.childAlignment = TextAnchor.MiddleCenter;
 
-        // increment counter and return reference to empty gameobject on which
-        // components can be added.
-        messageCounter++;
+        // Return empty gameobject on which chat components will be added
         return chat.transform.GetChild(0).gameObject;
     }
 
