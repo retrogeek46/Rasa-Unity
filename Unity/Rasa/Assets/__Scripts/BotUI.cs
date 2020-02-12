@@ -8,16 +8,17 @@ using UnityEngine.UI;
 /// with the UI.
 /// </summary>
 public class BotUI : MonoBehaviour {
-    public GameObject   contetnDisplayObject;       // Text gameobject where all the conversation is shown
+    public GameObject   contentDisplayObject;       // Text gameobject where all the conversation is shown
     public InputField   input;                      // InputField gameobject wher user types their message
 
     public GameObject   userBubble;                 // reference to user chat bubble prefab
     public GameObject   botBubble;                  // reference to bot chat bubble prefab
 
     private const int messagePadding = 15;          // space between chat bubbles 
-    private int messageHeight = messagePadding;     // int to keep track of where next message should be rendered
+    private int allMessagesHeight = messagePadding;     // int to keep track of where next message should be rendered
     public bool increaseContentObjectHeight;        // bool to check if content object height should be increased
 
+    public NetworkManager networkManager;           // reference to Network Manager script
 
     /// <summary>
     /// This method is used to update the display text object with the user's and bot's messages.
@@ -30,7 +31,7 @@ public class BotUI : MonoBehaviour {
         AddChatComponent(chatBubbleChild, message, messageType);
 
         // Set chat bubble position
-        SetChatBubblePosition(chatBubbleChild.transform.parent.GetComponent<RectTransform>(), sender);
+        StartCoroutine(SetChatBubblePosition(chatBubbleChild.transform.parent.GetComponent<RectTransform>(), sender));
 
         // Set focus on input field
         input.Select();
@@ -42,7 +43,10 @@ public class BotUI : MonoBehaviour {
     /// </summary>
     /// <param name="chatBubblePos">RectTransform of chat bubble</param>
     /// <param name="sender">Sender who sent the message</param>
-    private void SetChatBubblePosition (RectTransform chatBubblePos, string sender) {
+    private IEnumerator SetChatBubblePosition (RectTransform chatBubblePos, string sender) {
+        // Wait for end of frame before calculating UI transform
+        yield return new WaitForEndOfFrame();
+
         // get horizontal position based on sender
         int horizontalPos = 0;
         if (sender == "Doku") {
@@ -52,18 +56,42 @@ public class BotUI : MonoBehaviour {
         }
 
         // set the chat bubble in correct place
-        messageHeight += 15 + (int)chatBubblePos.sizeDelta.y;
-        chatBubblePos.anchoredPosition3D = new Vector3(horizontalPos, -messageHeight, 0);
+        allMessagesHeight += 15 + (int)chatBubblePos.sizeDelta.y;
+        //print("message height is : " + messageHeight + ", bubble : " + chatBubblePos.sizeDelta.y);
+        chatBubblePos.anchoredPosition3D = new Vector3(horizontalPos, -allMessagesHeight, 0);
 
-        if (messageHeight > 340) {
+        if (allMessagesHeight > 340) {
             // update contentDisplayObject hieght
-            RectTransform contentRect = contetnDisplayObject.GetComponent<RectTransform>();
-            contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, messageHeight + messagePadding);
+            RectTransform contentRect = contentDisplayObject.GetComponent<RectTransform>();
+            contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, allMessagesHeight + messagePadding);
+            contentDisplayObject.transform.GetComponentInParent<ScrollRect>().verticalNormalizedPosition = 0;
         }
     }
 
-    public void RefreshChatBubblePosition (GameObject display) { 
+    public IEnumerator RefreshChatBubblePosition () {
+        // Wait for end of frame before calculating UI transform
+        yield return new WaitForEndOfFrame();
+        
         // refresh position of all gameobjects based on size
+        int localAllMessagesHeight = messagePadding;
+        foreach (RectTransform chatBubbleRect in contentDisplayObject.GetComponent<RectTransform>()) {
+            if (chatBubbleRect.sizeDelta.y < 35) {
+                localAllMessagesHeight += 35 + messagePadding;
+            } else {
+                localAllMessagesHeight += (int)chatBubbleRect.sizeDelta.y + messagePadding;
+            }
+            chatBubbleRect.anchoredPosition3D =
+                    new Vector3(chatBubbleRect.anchoredPosition3D.x, -localAllMessagesHeight, 0);
+        }
+
+        // Update global message Height variable
+        allMessagesHeight = localAllMessagesHeight;
+        if (allMessagesHeight > 340) {
+            // update contentDisplayObject hieght
+            RectTransform contentRect = contentDisplayObject.GetComponent<RectTransform>();
+            contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, allMessagesHeight + messagePadding);
+            contentDisplayObject.transform.GetComponentInParent<ScrollRect>().verticalNormalizedPosition = 0;
+        }
     }
 
     /// <summary>
@@ -76,11 +104,11 @@ public class BotUI : MonoBehaviour {
         if (sender == "Doku") {
             // Create user chat bubble from prefabs and set it's position
             chat = Instantiate(userBubble);
-            chat.transform.SetParent(contetnDisplayObject.transform, false);
+            chat.transform.SetParent(contentDisplayObject.transform, false);
         } else if (sender == "Bot") {
             // Create bot chat bubble from prefabs and set it's position
             chat = Instantiate(botBubble);
-            chat.transform.SetParent(contetnDisplayObject.transform, false);
+            chat.transform.SetParent(contentDisplayObject.transform, false);
         }
 
         // Add content size fitter
@@ -120,7 +148,7 @@ public class BotUI : MonoBehaviour {
             case "image":
                 // Create and init Image component
                 Image chatImage = chatBubbleObject.AddComponent<Image>();
-                StartCoroutine(NetworkManager.SetImageTextureFromUrl(message, chatImage));
+                StartCoroutine(networkManager.SetImageTextureFromUrl(message, chatImage));
                 break;
             case "attachment":
                 break;

@@ -96,7 +96,7 @@ public class NetworkManager : MonoBehaviour {
     /// <param name="url">url where the image resource is located</param>
     /// <param name="image">RawImage object on which the texture will be applied</param>
     /// <returns></returns>
-    public static IEnumerator SetImageTextureFromUrl (string url, Image image) {
+    public IEnumerator SetImageTextureFromUrl (string url, Image image) {
         // Send request to get the image resource
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
         yield return request.SendWebRequest();
@@ -134,6 +134,9 @@ public class NetworkManager : MonoBehaviour {
                 texture2D, 
                 new Rect(0.0f, 0.0f, texture2D.width, texture2D.height), 
                 new Vector2(0.5f, 0.5f), 100.0f);
+
+            // Resize and reposition all chat bubbles
+            StartCoroutine(botUI.RefreshChatBubblePosition());
         }
     }
 }
