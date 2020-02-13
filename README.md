@@ -8,7 +8,7 @@ Currently no work on chatbot has been done except implementing the custom connec
 ## Installation
 First, clone this repo using `git clone https://github.com/retrogeek46/Rasa-Unity` and checkout to v0.2.0.
 ### Rasa
-- Change directory into Rasa/ and create a virtual environemt using  
+- Change directory into Rasa/ and create a virtual environment using  
 `python -m venv venv`
 - Activate the virtual environment  
 Bash on Windows&nbsp;: `source venv/Scripts/activate`  
