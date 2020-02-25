@@ -1,41 +1,22 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Networking;
 
+// A struct to help in creating the Json object to be sent to the rasa server
 public struct PostMessage {
     public string message;
     public string sender;
 }
 
-
 public class NetworkManager : MonoBehaviour {
 
-    public InputField inputBox;
-    public Text display;
-    private const string rasa_url = "http://127.0.0.1:5005/webhooks/unity/webhook";
+    private const string rasa_url = "http://localhost:5005/webhooks/rest/webhook";
 
-    // Start is called before the first frame update
-    void Start () {
-
-    }
-
-    // Update is called once per frame
-    void Update () {
-        
-    }
-
-    public void SendMessage () {
-        // Get message from textbox and clear the input field
-        string message = inputBox.text;
-        inputBox.text = "";
-        print("User entered : " + message);
-
+    public void SendMessageToRasa () {
         // Create a json object from user message
         PostMessage postMessage = new PostMessage {
-            sender = "doku",
-            message = message
+            sender = "user",
+            message = "Hi"
         };
 
         string jsonBody = JsonUtility.ToJson(postMessage);
