@@ -1,11 +1,31 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Networking;
 
-// A struct to help in creating the Json object to be sent to the rasa server
-public struct PostMessage {
+// A class to help in creating the Json object to be sent to the rasa server
+public class PostMessage {
     public string message;
     public string sender;
+}
+
+[Serializable]
+// A class to extract multiple json objects nested inside a value
+public class RootMessages {
+    public RecieveData[] messages;
+}
+
+[Serializable]
+// A class to extract a single message returned from the bot
+public class RecieveData {
+    public string recipient_id;
+    public string text;
+    public string image;
+    public string attachemnt;
+    public string button;
+    public string element;
+    public string quick_replie;
 }
 
 public class NetworkManager : MonoBehaviour {
@@ -35,6 +55,33 @@ public class NetworkManager : MonoBehaviour {
 
         yield return request.SendWebRequest();
 
-        Debug.Log("Response: " + request.downloadHandler.text);
+        RecieveMessage(request.downloadHandler.text);
+    }
+
+    // Parse the response received from the bot
+    public void RecieveMessage (string response) {
+        // Deserialize response recieved from the bot
+        RootMessages recieveMessages =
+            JsonUtility.FromJson<RootMessages>("{\"messages\":" + response + "}");
+
+        print(recieveMessages.messages);
+
+        // show message based on message type on UI
+        foreach (RecieveData message in recieveMessages.messages) {
+            FieldInfo[] fields = typeof(RecieveData).GetFields();
+            foreach (FieldInfo field in fields) {
+                string data = null;
+
+                // extract data from response in try-catch for handling null exceptions
+                try {
+                    data = field.GetValue(message).ToString();
+                } catch (NullReferenceException) { }
+
+                // print data
+                if (data != null && field.Name != "recipient_id") {
+                    Debug.Log("Bot said \"" + data + "\"");
+                }
+            }
+        }
     }
 }
