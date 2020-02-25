@@ -42,3 +42,4 @@ __WIP__, the source code is commented though.
 6. Add docs
 7. Add delay between messages
 8. Add animations before showing messages
+9. Add voice support
