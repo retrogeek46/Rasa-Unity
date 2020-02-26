@@ -5,20 +5,20 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 // A class to help in creating the Json object to be sent to the rasa server
-public class PostMessage {
+public class PostMessageJson {
     public string message;
     public string sender;
 }
 
 [Serializable]
 // A class to extract multiple json objects nested inside a value
-public class RootMessages {
-    public RecieveData[] messages;
+public class RootReceiveMessageJson {
+    public ReceiveMessageJson[] messages;
 }
 
 [Serializable]
 // A class to extract a single message returned from the bot
-public class RecieveData {
+public class ReceiveMessageJson {
     public string recipient_id;
     public string text;
     public string image;
@@ -34,7 +34,7 @@ public class NetworkManager : MonoBehaviour {
 
     public void SendMessageToRasa () {
         // Create a json object from user message
-        PostMessage postMessage = new PostMessage {
+        PostMessageJson postMessage = new PostMessageJson {
             sender = "user",
             message = "Hi"
         };
@@ -55,20 +55,18 @@ public class NetworkManager : MonoBehaviour {
 
         yield return request.SendWebRequest();
 
-        RecieveMessage(request.downloadHandler.text);
+        RecieveResponse(request.downloadHandler.text);
     }
 
     // Parse the response received from the bot
-    public void RecieveMessage (string response) {
+    public void RecieveResponse (string response) {
         // Deserialize response recieved from the bot
-        RootMessages recieveMessages =
-            JsonUtility.FromJson<RootMessages>("{\"messages\":" + response + "}");
-
-        print(recieveMessages.messages);
+        RootReceiveMessageJson recieveMessages =
+            JsonUtility.FromJson<RootReceiveMessageJson>("{\"messages\":" + response + "}");
 
         // show message based on message type on UI
-        foreach (RecieveData message in recieveMessages.messages) {
-            FieldInfo[] fields = typeof(RecieveData).GetFields();
+        foreach (ReceiveMessageJson message in recieveMessages.messages) {
+            FieldInfo[] fields = typeof(ReceiveMessageJson).GetFields();
             foreach (FieldInfo field in fields) {
                 string data = null;
 
