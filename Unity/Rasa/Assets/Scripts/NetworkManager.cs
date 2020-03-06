@@ -28,8 +28,12 @@ public class RecieveData {
     public string quick_replie;
 }
 
+/// <summary>
+/// This class handles all the network requests and serialization/deserialization of data
+/// </summary>
 public class NetworkManager : MonoBehaviour {
-
+    
+    // the url at which bot's custom connector is hosted
     private const string rasa_url = "http://localhost:5005/webhooks/rest/webhook";
 
     public void SendMessageToRasa () {
@@ -63,8 +67,6 @@ public class NetworkManager : MonoBehaviour {
         // Deserialize response recieved from the bot
         RootMessages recieveMessages =
             JsonUtility.FromJson<RootMessages>("{\"messages\":" + response + "}");
-
-        print(recieveMessages.messages);
 
         // show message based on message type on UI
         foreach (RecieveData message in recieveMessages.messages) {
