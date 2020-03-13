@@ -45,9 +45,9 @@ public class BotUI : MonoBehaviour {
         // get horizontal position based on sender
         int horizontalPos = 0;
         if (sender == "User") {
-            horizontalPos = -20;
+            horizontalPos = -50;
         } else if (sender == "Bot") {
-            horizontalPos = 20;
+            horizontalPos = 50;
         }
 
         // set the vertical position of chat bubble
