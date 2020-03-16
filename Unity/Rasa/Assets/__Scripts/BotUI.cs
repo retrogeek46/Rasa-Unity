@@ -28,10 +28,19 @@ public class BotUI : MonoBehaviour {
     public void UpdateDisplay (string sender, string message, string messageType) {
         // Create chat bubble and add components
         GameObject chatBubbleChild = CreateChatBubble(sender);
-        AddChatComponent(chatBubbleChild, message, messageType);
+
+        StartCoroutine(AddChatComponentAfterDelay(sender, chatBubbleChild, message, messageType));
+    }
+
+    private IEnumerator AddChatComponentAfterDelay (string sender, GameObject chatBubbleChild, string message, string messageType) {
 
         // Set chat bubble position
         StartCoroutine(SetChatBubblePosition(chatBubbleChild.transform.parent.GetComponent<RectTransform>(), sender));
+
+        yield return new WaitForSeconds(2f);
+        
+        // Show component after a short animation
+        AddChatComponent(chatBubbleChild, message, messageType);
 
         // Set focus on input field
         input.Select();
