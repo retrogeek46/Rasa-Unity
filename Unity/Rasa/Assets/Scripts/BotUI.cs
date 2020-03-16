@@ -44,9 +44,9 @@ public class BotUI : MonoBehaviour {
 
         // get horizontal position based on sender
         int horizontalPos = 0;
-        if (sender == "User") {
+        if (sender == "user") {
             horizontalPos = -50;
-        } else if (sender == "Bot") {
+        } else if (sender == "bot") {
             horizontalPos = 50;
         }
 
@@ -98,11 +98,11 @@ public class BotUI : MonoBehaviour {
     /// <returns>Reference to empty gameobject on which message components can be added</returns>
     private GameObject CreateChatBubble (string sender) {
         GameObject chat = null;
-        if (sender == "Doku") {
+        if (sender == "user") {
             // Create user chat bubble from prefabs and set it's position
             chat = Instantiate(userBubble);
             chat.transform.SetParent(contentDisplayObject.transform, false);
-        } else if (sender == "Bot") {
+        } else if (sender == "bot") {
             // Create bot chat bubble from prefabs and set it's position
             chat = Instantiate(botBubble);
             chat.transform.SetParent(contentDisplayObject.transform, false);
@@ -115,9 +115,9 @@ public class BotUI : MonoBehaviour {
 
         // Add vertical layout group
         VerticalLayoutGroup verticalLayout = chat.AddComponent<VerticalLayoutGroup>();
-        if (sender == "Doku") {
+        if (sender == "user") {
             verticalLayout.padding = new RectOffset(10, 20, 5, 5);
-        } else if (sender == "Bot") {
+        } else if (sender == "bot") {
             verticalLayout.padding = new RectOffset(20, 10, 5, 5);
         }
         verticalLayout.childAlignment = TextAnchor.MiddleCenter;
@@ -137,6 +137,7 @@ public class BotUI : MonoBehaviour {
             case "text":
                 // Create and init Text component
                 Text chatMessage = chatBubbleObject.AddComponent<Text>();
+                // add font as it is none at times when creating text component from script
                 chatMessage.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
                 chatMessage.fontSize = 18;
                 chatMessage.alignment = TextAnchor.MiddleLeft;
@@ -145,7 +146,7 @@ public class BotUI : MonoBehaviour {
             case "image":
                 // Create and init Image component
                 Image chatImage = chatBubbleObject.AddComponent<Image>();
-                //StartCoroutine(networkManager.SetImageTextureFromUrl(message, chatImage));
+                StartCoroutine(networkManager.SetImageTextureFromUrl(message, chatImage));
                 break;
             case "attachment":
                 break;
