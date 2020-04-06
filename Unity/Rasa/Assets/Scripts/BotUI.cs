@@ -7,6 +7,8 @@ using UnityEngine.UI;
 /// This class contains the gameobjects and methods for interacting with the UI.
 /// </summary>
 public class BotUI : MonoBehaviour {
+
+    public bool botUIActive = false;
     public GameObject       contentDisplayObject;               // Text gameobject where all the conversation is shown
     public InputField       inputField;                              // InputField gameobject wher user types their message
 
@@ -159,6 +161,9 @@ public class BotUI : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// If bot is online set input field active else inactive
+    /// </summary>
     private void LateUpdate () {
         if (networkManager.botOnline) {
             inputField.interactable = true;

@@ -198,10 +198,12 @@ public class NetworkManager : MonoBehaviour {
         }
 
         // if bot is online then hide bot disabled panel, else show it
-        if (botOnline) {
-            botOfflineMessage.SetActive(false);
-        } else {
-            botOfflineMessage.SetActive(true);
+        if (botUI.botUIActive) {
+            if (botOnline) {
+                botOfflineMessage.SetActive(false);
+            } else {
+                botOfflineMessage.SetActive(true);
+            }
         }
     }
 }
