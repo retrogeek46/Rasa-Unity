@@ -10,11 +10,44 @@ using UnityEngine.Networking;
 /// </summary>
 public class NetworkManager : MonoBehaviour {
 
-    // reference to BotUI class
-    public BotUI botUI;
-    
+    public bool botOnline = false;          // bool to check if bot is online    
+    public BotUI botUI;                     // reference to BotUI class
+    public float currentTime = 0f;          // float to keep track of current time
+    public float pollingTimeLimit = 5f;     // time after which polling should be done for bot status (seconds)
+    public GameObject botOfflineMessage;    // panel that shows bot offline message to user
+
     // the url at which bot's custom connector is hosted
-    private const string rasa_url = "http://localhost:5005/webhooks/rest/webhook";
+    private const string rasa_webhook_url = "http://localhost:5005/webhooks/rest/webhook";
+
+    // the url at which bot is polled to see if it is online
+    private const string rasa_url = "http://localhost:5005/";
+
+    private void Start () {
+        botOnline = false;
+        StartCoroutine(CheckBotStatus());
+    }
+
+    /// <summary>
+    /// This method sends a GET request to the bot to check if it is online
+    /// </summary>
+    public IEnumerator CheckBotStatus () {
+        // Create a request to hit the rasa custom connector
+        UnityWebRequest request = new UnityWebRequest(rasa_url, "GET");
+        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        // receive the response
+        yield return request.SendWebRequest();
+
+        if (request.isNetworkError || request.isHttpError) {
+            // could not get bot response
+            Debug.Log(request.error);
+            botOnline = false;
+        } else {
+            // Render the response on UI object
+            botOnline = true;
+        }
+    }
 
     /// <summary>
     /// This method is called when user has entered their message and hits the send button.
@@ -37,7 +70,7 @@ public class NetworkManager : MonoBehaviour {
         botUI.UpdateDisplay("user", message, "text");
 
         // Create a post request with the data to send to Rasa server
-        StartCoroutine(PostRequest(rasa_url, jsonBody));
+        StartCoroutine(PostRequest(rasa_webhook_url, jsonBody));
     }
 
     /// <summary>
@@ -147,6 +180,24 @@ public class NetworkManager : MonoBehaviour {
 
             // Resize and reposition all chat bubbles
             StartCoroutine(botUI.RefreshChatBubblePosition());
+        }
+    }
+
+    private void Update () {
+        // increment current time with Time.deltaTime
+        currentTime += Time.deltaTime;
+        
+        // every 5 seconds poll the bot to see if online
+        if (currentTime > pollingTimeLimit) {
+            currentTime = 0;
+            StartCoroutine(CheckBotStatus());
+        }
+
+        // if bot is online then hide bot disabled panel, else show it
+        if (botOnline) {
+            botOfflineMessage.SetActive(false);
+        } else {
+            botOfflineMessage.SetActive(true);
         }
     }
 }
