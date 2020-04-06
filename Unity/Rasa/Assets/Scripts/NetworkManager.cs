@@ -58,8 +58,14 @@ public class NetworkManager : MonoBehaviour {
         // receive the response
         yield return request.SendWebRequest();
 
-        // Render the response on UI object
-        RecieveMessage(request.downloadHandler.text);
+        if (request.isNetworkError || request.isHttpError) { 
+            // could not get bot response
+            Debug.Log(request.error);
+        }
+        else { 
+            // Render the response on UI object
+            RecieveMessage(request.downloadHandler.text);
+        }
     }
 
 
@@ -68,26 +74,29 @@ public class NetworkManager : MonoBehaviour {
     /// </summary>
     /// <param name="response">response json recieved from the bot</param>
     public void RecieveMessage (string response) {
-        // Deserialize response recieved from the bot
-        RootMessages recieveMessages =
-            JsonUtility.FromJson<RootMessages>("{\"messages\":" + response + "}");
+        try {
+            // Deserialize response recieved from the bot
+            RootMessages recieveMessages = JsonUtility.FromJson<RootMessages>("{\"messages\":" + response + "}");
 
-        // show message based on message type on UI
-        foreach (RecieveData message in recieveMessages.messages) {
-            FieldInfo[] fields = typeof(RecieveData).GetFields();
-            foreach (FieldInfo field in fields) {
-                string data = null;
+            // show message based on message type on UI
+            foreach (RecieveData message in recieveMessages.messages) {
+                FieldInfo[] fields = typeof(RecieveData).GetFields();
+                foreach (FieldInfo field in fields) {
+                    string data = null;
 
-                // extract data from response in try-catch for handling null exceptions
-                try {
-                    data = field.GetValue(message).ToString();
-                } catch (NullReferenceException) { }
+                    // extract data from response in try-catch for handling null exceptions
+                    try {
+                        data = field.GetValue(message).ToString();
+                    } catch (NullReferenceException) { }
 
-                // print data
-                if (data != null && field.Name != "recipient_id") {
-                    botUI.UpdateDisplay("bot", data, field.Name);
+                    // print data
+                    if (data != null && field.Name != "recipient_id") {
+                        botUI.UpdateDisplay("bot", data, field.Name);
+                    }
                 }
             }
+        } catch (Exception e) {
+            Debug.Log("Error while deserializing json due to " + e);
         }
     }
 
@@ -114,8 +123,6 @@ public class NetworkManager : MonoBehaviour {
             // set max size for image width and height based on chat size limits
             float imageWidth = 0, imageHeight = 0, texWidth = texture2D.width, texHeight = texture2D.height;
             if ((texture2D.width > texture2D.height) && texHeight > 0) {
-                // Landscape image
-                imageWidth = texWidth;
                 // Landscape image
                 imageWidth = texWidth;
                 if (imageWidth > 200) imageWidth = 200;
