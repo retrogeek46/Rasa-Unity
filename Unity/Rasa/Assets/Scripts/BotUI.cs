@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// </summary>
 public class BotUI : MonoBehaviour {
     public GameObject       contentDisplayObject;               // Text gameobject where all the conversation is shown
-    public InputField       input;                              // InputField gameobject wher user types their message
+    public InputField       inputField;                              // InputField gameobject wher user types their message
 
     public GameObject       userBubble;                         // reference to user chat bubble prefab
     public GameObject       botBubble;                          // reference to bot chat bubble prefab
@@ -156,6 +156,14 @@ public class BotUI : MonoBehaviour {
                 break;
             case "quick_replies":
                 break;
+        }
+    }
+
+    private void LateUpdate () {
+        if (networkManager.botOnline) {
+            inputField.interactable = true;
+        } else {
+            inputField.interactable = false;
         }
     }
 }

@@ -1103,7 +1103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   contentDisplayObject: {fileID: 1033086477}
-  input: {fileID: 417783750}
+  inputField: {fileID: 417783750}
   userBubble: {fileID: 1352769590393542828, guid: 4732277e013cd8f4980e28ae21fd3c9a,
     type: 3}
   botBubble: {fileID: 7313331538036904333, guid: 2ba297bb96f57914c8ddaae24ce36490,
@@ -1418,7 +1418,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1748751477
 RectTransform:
   m_ObjectHideFlags: 0

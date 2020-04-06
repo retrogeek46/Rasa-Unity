@@ -28,7 +28,7 @@ public class NetworkManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// This method sends a GET request to the bot to check if it is online
+    /// This method sends a GET request to the bot to check if it is online.
     /// </summary>
     public IEnumerator CheckBotStatus () {
         // Create a request to hit the rasa custom connector
@@ -57,20 +57,24 @@ public class NetworkManager : MonoBehaviour {
     public void SendMessageToRasa () {
         // get user messasge from input field, create a json object 
         // from user message and then clear input field
-        string message = botUI.input.text;
-        botUI.input.text = "";
+        string message = botUI.inputField.text;
+        botUI.inputField.text = "";
 
-        PostMessage postMessage = new PostMessage {
-            sender = "user",
-            message = message
-        };
-        string jsonBody = JsonUtility.ToJson(postMessage);
+        // if user message is not empty, send message to bot
+        if (message != "") {
+            // create json from message
+            PostMessage postMessage = new PostMessage {
+                sender = "user",
+                message = message
+            };
+            string jsonBody = JsonUtility.ToJson(postMessage);
 
-        // update UI object with user message
-        botUI.UpdateDisplay("user", message, "text");
+            // update UI object with user message
+            botUI.UpdateDisplay("user", message, "text");
 
-        // Create a post request with the data to send to Rasa server
-        StartCoroutine(PostRequest(rasa_webhook_url, jsonBody));
+            // Create a post request with the data to send to Rasa server
+            StartCoroutine(PostRequest(rasa_webhook_url, jsonBody));
+        }
     }
 
     /// <summary>
