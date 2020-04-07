@@ -52,6 +52,27 @@ public class NetworkManager : MonoBehaviour {
     /// <summary>
     /// This method is called when user has entered their message and hits the send button.
     /// It calls the <see cref="NetworkManager.PostRequest(string, string)"> coroutine to send
+    /// the user message to the bot without showing on UI.
+    /// </summary>
+    /// <param name="message"></param>
+    public void SendMessageToRasa (string message) {
+        // if user message is not empty, send message to bot
+        if (message != "") {
+            // create json from message
+            PostMessage postMessage = new PostMessage {
+                sender = "user",
+                message = message
+            };
+            string jsonBody = JsonUtility.ToJson(postMessage);
+
+            // Create a post request with the data to send to Rasa server
+            StartCoroutine(PostRequest(rasa_webhook_url, jsonBody));
+        }
+    }
+
+    /// <summary>
+    /// This method is called when user has entered their message and hits the send button.
+    /// It calls the <see cref="NetworkManager.PostRequest(string, string)"> coroutine to send
     /// the user message to the bot and also updates the UI with user message.
     /// </summary>
     public void SendMessageToRasa () {
@@ -198,7 +219,7 @@ public class NetworkManager : MonoBehaviour {
         }
 
         // if bot is online then hide bot disabled panel, else show it
-        if (botUI.botUIActive) {
+        if (BotUI.botUIActive) {
             if (botOnline) {
                 botOfflineMessage.SetActive(false);
             } else {

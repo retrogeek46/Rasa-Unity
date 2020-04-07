@@ -4,24 +4,30 @@ using UnityEngine;
 
 public class SelectionWheel : MonoBehaviour {
 
-    // update pokemon sprites with selection wheel
-
-    public GameObject selectionWheel;   // reference for selection wheel gameobejct
-    public GameObject[] Pokemons;       // array of pokemons
-    public GameObject[] Slots;          // array of slots
-    public bool wheelRotated = true;    // bool to check if wheel has been rotated
+    public GameObject       selectionWheel;         // reference for selection wheel gameobejct
+    public GameObject[]     Pokemons;               // array of pokemons
+    public GameObject[]     Slots;                  // array of slots
+    public GameObject[]     gameObjectsToHide;      // array of gameObjects which are to be hidden
     
-    private int currentSlot;            // current slot for selection wheel
-    private Quaternion[] validPositions = new Quaternion[5] {
+    public bool             wheelRotated = true;    // bool to check if wheel has been rotated
+    public static int       currentSlot;            // current slot for selection wheel
+    private string[] pokemonNames = new string[5] {
+        "Charizard",
+        "Lapras",
+        "Geodude",
+        "Rayquaza",
+        "Pickachu"
+    };
+    private Quaternion[]    validPositions = new Quaternion[5] {
             Quaternion.Euler(90, 180, 0),
             Quaternion.Euler(90, 252, 0),
             Quaternion.Euler(90, 324, 0),
             Quaternion.Euler(90, 36, 0),
             Quaternion.Euler(90, 108, 0)
-        };
-
-    private bool isRotating = false;      // bool to check if selection wheel is rotating
-    public float sensitivity = 0.7f;
+    };
+    private bool            isRotating = false;     // bool to check if selection wheel is rotating
+    public float            sensitivity;            // how smooth the rotation animation is
+    public NetworkManager   networkManager;         // reference to network manager
     
     // Start is called before the first frame update
     void Start () {
@@ -35,8 +41,6 @@ public class SelectionWheel : MonoBehaviour {
         if (wheelRotated) {
             UpdatePokemonTransforms();
         }
-
-        //Debug.Log("Current selectionWheel rotation value is : " + selectionWheel.transform.rotation.eulerAngles);
     }
 
     /// <summary>
@@ -81,12 +85,17 @@ public class SelectionWheel : MonoBehaviour {
         wheelRotated = true;
     }
 
-    public void SelectPokemon () { 
+    public void SelectPokemon () {
         // when this button is pressed bot UI comes up and user can talk to it
 
         // hide buttons, show pokemon in spotlight, shrink selection wheel
+        foreach (GameObject gameObjectToHide in gameObjectsToHide) {
+            gameObjectToHide.SetActive(false); 
+        }
 
-        // show bot UI
+        // show bot UI and send message to bot
+        BotUI.botUIActive = true;
+        networkManager.SendMessageToRasa("/greet{\"selected_pokemon\":\"" + pokemonNames[currentSlot] + "\"}");
     }
 
     /// <summary>

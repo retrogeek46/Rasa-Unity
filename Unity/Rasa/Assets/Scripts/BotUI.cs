@@ -8,9 +8,11 @@ using UnityEngine.UI;
 /// </summary>
 public class BotUI : MonoBehaviour {
 
-    public bool botUIActive = false;
+    public static bool      botUIActive = false;                // bool to keep track of whether the bot should be shown or not
+    public GameObject       ChatbotUI;                          // reference to all canvas chatbot objects 
+
     public GameObject       contentDisplayObject;               // Text gameobject where all the conversation is shown
-    public InputField       inputField;                              // InputField gameobject wher user types their message
+    public InputField       inputField;                         // InputField gameobject wher user types their message
 
     public GameObject       userBubble;                         // reference to user chat bubble prefab
     public GameObject       botBubble;                          // reference to bot chat bubble prefab
@@ -165,6 +167,14 @@ public class BotUI : MonoBehaviour {
     /// If bot is online set input field active else inactive
     /// </summary>
     private void LateUpdate () {
+        // show and hide chatbot
+        if (botUIActive && !ChatbotUI.activeSelf) {
+            ChatbotUI.SetActive(true);
+        } else if (!botUIActive && ChatbotUI.activeSelf) {
+            ChatbotUI.SetActive(false);
+        }
+
+        // toggle input field based on whether bot is online
         if (networkManager.botOnline) {
             inputField.interactable = true;
         } else {
