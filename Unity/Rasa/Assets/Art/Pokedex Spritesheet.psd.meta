@@ -5,6 +5,18 @@ TextureImporter:
   - first:
       213: 3244973533512796668
     second: selectionWheel
+  - first:
+      213: 3559758036873292230
+    second: chatAnimation_0
+  - first:
+      213: -188669160112314212
+    second: chatAnimation_1
+  - first:
+      213: -8745714764721626062
+    second: chatAnimation_2
+  - first:
+      213: 1372812266383383979
+    second: chatAnimation_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -129,6 +141,90 @@ TextureImporter:
       bones: []
       spriteID: 2f668ba29bc1a274da0cff69d3f66b48
       internalID: 3244973533512796668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chatAnimation_0
+      rect:
+        serializedVersion: 2
+        x: 835
+        y: 1059
+        width: 51
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 66a3ef1e9119e0442b17e6df58f7262a
+      internalID: 3559758036873292230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chatAnimation_1
+      rect:
+        serializedVersion: 2
+        x: 887
+        y: 1059
+        width: 51
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8e8e27764e880d4c98ff91a46aa3656
+      internalID: -188669160112314212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chatAnimation_2
+      rect:
+        serializedVersion: 2
+        x: 939
+        y: 1059
+        width: 51
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76d8baadd21181d489443d932d0da0ec
+      internalID: -8745714764721626062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chatAnimation_3
+      rect:
+        serializedVersion: 2
+        x: 991
+        y: 1059
+        width: 51
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5a77455e61aa8fc45ae9d2943e571607
+      internalID: 1372812266383383979
       vertices: []
       indices: 
       edges: []

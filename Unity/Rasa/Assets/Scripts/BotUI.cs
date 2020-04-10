@@ -18,6 +18,8 @@ public class BotUI : MonoBehaviour {
     public GameObject       userBubble;                         // reference to user chat bubble prefab
     public GameObject       botBubble;                          // reference to bot chat bubble prefab
     public bool             renderingMessage;                   // bool to keep track of message while animation is running
+    public RuntimeAnimatorController    
+                            chatAnimatorController;            // reference to chat bubble animation controller
 
     private const int       messagePadding = 15;                // space between chat bubbles 
     private int             allMessagesHeight = messagePadding; // int to keep track of where next message should be rendered
@@ -40,27 +42,33 @@ public class BotUI : MonoBehaviour {
                 // print data
                 if (data != null && field.Name != "recipient_id") {
 
-                    // Create chat bubble and show animation
+                    // Create chat bubble, add animator and reposition
                     GameObject chatBubbleChild = CreateChatBubble("bot");
-
-                    // Set chat bubble position
+                    AddChatComponent(chatBubbleChild, "", "animation");
                     StartCoroutine(SetChatBubblePosition(chatBubbleChild.transform.parent.GetComponent<RectTransform>(), "bot"));
                     
+                    // Add delay then remove animator and reposition
                     yield return new WaitForSeconds(2f);
-                    
                     allMessagesHeight -= messagePadding + (int)chatBubbleChild.transform.parent.GetComponent<RectTransform>().sizeDelta.y;
+                    if (chatBubbleChild.GetComponent<Animator>() != null) {
+                        Destroy(chatBubbleChild.GetComponent<Animator>());
+                        Destroy(chatBubbleChild.GetComponent<Image>());
+                    }
+                    yield return new WaitForEndOfFrame();
+
+                    // Add message to the chat bubble
                     UpdateDisplay(data, field.Name, chatBubbleChild);
                 }
             }
-            //StartCoroutine(RefreshChatBubblePosition());
         }
     }
 
     /// <summary>
-    /// This method is used to update the display panel with the user's and bot's messages.
+    /// This method is used to update the display panel with the user's messages by creating message bubble
     /// </summary>
     /// <param name="sender">The one who wrote this message</param>
     /// <param name="message">The message</param>
+    /// <param name="messageType">The message type like text, image etc</param>
     public void UpdateDisplay (string sender, string message, string messageType) {
         // Create chat bubble and show animation
         GameObject chatBubbleChild = CreateChatBubble(sender);
@@ -72,6 +80,12 @@ public class BotUI : MonoBehaviour {
         StartCoroutine(SetChatBubblePosition(chatBubbleChild.transform.parent.GetComponent<RectTransform>(), sender));
     }
 
+    /// <summary>
+    /// This method is used to update the display panel with the bot's messages by taking message bubble as argument
+    /// </summary>
+    /// <param name="message">The message</param>
+    /// <param name="messageType">The message type like text, image etc</param>
+    /// <param name="chatBubbleChild">reference to message bubble gameobject</param>
     public void UpdateDisplay (string message, string messageType, GameObject chatBubbleChild) {
         // Add chat component
         AddChatComponent(chatBubbleChild, message, messageType);
@@ -179,8 +193,14 @@ public class BotUI : MonoBehaviour {
     /// <param name="chatBubbleObject">The empty gameobject under chat bubble</param>
     /// <param name="message">message to be shown</param>
     /// <param name="messageType">The type of message (text, image etc)</param>
-    private void AddChatComponent (GameObject chatBubbleObject, string message, string messageType) {
+    private void AddChatComponent (GameObject chatBubbleObject, string message, string messageType) {        
         switch (messageType) {
+            case "animation":
+                // animate bot reply
+                chatBubbleObject.AddComponent<Image>();
+                Animator chatAnimator = chatBubbleObject.AddComponent<Animator>();
+                chatAnimator.runtimeAnimatorController = chatAnimatorController;
+                break;
             case "text":
                 // Create and init Text component
                 Text chatMessage = chatBubbleObject.AddComponent<Text>();
