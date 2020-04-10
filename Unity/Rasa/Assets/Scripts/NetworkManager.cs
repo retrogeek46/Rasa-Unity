@@ -136,23 +136,7 @@ public class NetworkManager : MonoBehaviour {
             // Deserialize response recieved from the bot
             RootMessages recieveMessages = JsonUtility.FromJson<RootMessages>("{\"messages\":" + response + "}");
 
-            // show message based on message type on UI
-            foreach (RecieveData message in recieveMessages.messages) {
-                FieldInfo[] fields = typeof(RecieveData).GetFields();
-                foreach (FieldInfo field in fields) {
-                    string data = null;
-
-                    // extract data from response in try-catch for handling null exceptions
-                    try {
-                        data = field.GetValue(message).ToString();
-                    } catch (NullReferenceException) { }
-
-                    // print data
-                    if (data != null && field.Name != "recipient_id") {
-                        botUI.UpdateDisplay("bot", data, field.Name);
-                    }
-                }
-            }
+            StartCoroutine(botUI.UnpackMessagesAfterDelay(recieveMessages));
         } catch (Exception e) {
             Debug.Log("Error while deserializing json due to " + e);
         }

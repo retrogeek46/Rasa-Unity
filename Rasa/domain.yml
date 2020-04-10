@@ -3,6 +3,8 @@ intents:
     use_entities: []
 - inform:
     use_entities: []
+- ask_query:
+    use_entities: []
 - goodbye
 
 entities:
@@ -12,14 +14,19 @@ entities:
 actions:
 - utter_greet
 - action_tell_pokemon_description
+- action_pokemon_query
+- utter_goodbye
 
 slots:
   selected_pokemon:
-    type: text
+    type: unfeaturized
+
+  query:
+    type: unfeaturized
 
 responses:
   utter_greet:
-  - text: "Hey! How are you?"
+  - text: "Welcome to PokeBot"
 
   utter_goodbye:
   - text: "Glad to help"

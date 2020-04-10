@@ -1,5 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +17,7 @@ public class BotUI : MonoBehaviour {
 
     public GameObject       userBubble;                         // reference to user chat bubble prefab
     public GameObject       botBubble;                          // reference to bot chat bubble prefab
+    public bool             renderingMessage;                   // bool to keep track of message while animation is running
 
     private const int       messagePadding = 15;                // space between chat bubbles 
     private int             allMessagesHeight = messagePadding; // int to keep track of where next message should be rendered
@@ -23,18 +25,59 @@ public class BotUI : MonoBehaviour {
 
     public NetworkManager   networkManager;                     // reference to Network Manager script
 
+    public IEnumerator UnpackMessagesAfterDelay (RootMessages recieveMessages) {
+        // show message based on message type on UI
+        foreach (RecieveData message in recieveMessages.messages) {
+            FieldInfo[] fields = typeof(RecieveData).GetFields();
+            foreach (FieldInfo field in fields) {
+                string data = null;
+
+                // extract data from response in try-catch for handling null exceptions
+                try {
+                    data = field.GetValue(message).ToString();
+                } catch (NullReferenceException) { }
+
+                // print data
+                if (data != null && field.Name != "recipient_id") {
+
+                    // Create chat bubble and show animation
+                    GameObject chatBubbleChild = CreateChatBubble("bot");
+
+                    // Set chat bubble position
+                    StartCoroutine(SetChatBubblePosition(chatBubbleChild.transform.parent.GetComponent<RectTransform>(), "bot"));
+                    
+                    yield return new WaitForSeconds(2f);
+                    
+                    allMessagesHeight -= messagePadding + (int)chatBubbleChild.transform.parent.GetComponent<RectTransform>().sizeDelta.y;
+                    UpdateDisplay(data, field.Name, chatBubbleChild);
+                }
+            }
+            //StartCoroutine(RefreshChatBubblePosition());
+        }
+    }
+
     /// <summary>
     /// This method is used to update the display panel with the user's and bot's messages.
     /// </summary>
     /// <param name="sender">The one who wrote this message</param>
     /// <param name="message">The message</param>
     public void UpdateDisplay (string sender, string message, string messageType) {
-        // Create chat bubble and add components
+        // Create chat bubble and show animation
         GameObject chatBubbleChild = CreateChatBubble(sender);
+
+        // Add chat component
         AddChatComponent(chatBubbleChild, message, messageType);
 
         // Set chat bubble position
         StartCoroutine(SetChatBubblePosition(chatBubbleChild.transform.parent.GetComponent<RectTransform>(), sender));
+    }
+
+    public void UpdateDisplay (string message, string messageType, GameObject chatBubbleChild) {
+        // Add chat component
+        AddChatComponent(chatBubbleChild, message, messageType);
+
+        // Set chat bubble position
+        StartCoroutine(SetChatBubblePosition(chatBubbleChild.transform.parent.GetComponent<RectTransform>(), "bot"));
     }
 
     /// <summary>
@@ -55,7 +98,7 @@ public class BotUI : MonoBehaviour {
         }
 
         // set the vertical position of chat bubble
-        allMessagesHeight += 15 + (int)chatBubblePos.sizeDelta.y;
+        allMessagesHeight += messagePadding + (int)chatBubblePos.sizeDelta.y;
         chatBubblePos.anchoredPosition3D = new Vector3(horizontalPos, -allMessagesHeight, 0);
 
         if (allMessagesHeight > 340) {
@@ -141,6 +184,8 @@ public class BotUI : MonoBehaviour {
             case "text":
                 // Create and init Text component
                 Text chatMessage = chatBubbleObject.AddComponent<Text>();
+                // format message so that each line is at max 50 characters
+                message = FormatMessage(message);
                 // add font as it is none at times when creating text component from script
                 chatMessage.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
                 chatMessage.fontSize = 18;
@@ -161,6 +206,43 @@ public class BotUI : MonoBehaviour {
             case "quick_replies":
                 break;
         }
+    }
+
+    /// <summary>
+    /// This method formats the message to be rendered on the bot ui so that each
+    /// line is at max 50 characters.
+    /// </summary>
+    /// <param name="message"></param>
+    /// <returns></returns>
+    private string FormatMessage (string message) {
+        // init  variables
+        string formatted_message = "";
+        int counter = 0;
+
+        //Debug.Log("original message is : " + message);
+
+        // add newline after every 50 characters
+        for (int i = 0; i < message.Length; i++) {
+            if (counter < 50) {
+                formatted_message += message[i];
+            } else {
+                // add hyphen if a word is being broken
+                if (message[i - 1] != ' ') {
+                    formatted_message += "-";
+                }
+
+                counter = 0;
+                formatted_message += "\n";
+
+                formatted_message += message[i];
+            }
+            counter++;
+        }
+
+        //Debug.Log("formatted message is : " + formatted_message);
+
+        // return formatted message string
+        return formatted_message;
     }
 
     /// <summary>

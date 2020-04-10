@@ -16,7 +16,7 @@ public class SelectionWheel : MonoBehaviour {
         "Lapras",
         "Geodude",
         "Rayquaza",
-        "Pickachu"
+        "Pikachu"
     };
     private Quaternion[]    validPositions = new Quaternion[5] {
             Quaternion.Euler(90, 180, 0),
@@ -31,9 +31,15 @@ public class SelectionWheel : MonoBehaviour {
     
     // Start is called before the first frame update
     void Start () {
+        // align pokemon sprites with slots on selection wheel
+        // and init wheel variables
         UpdatePokemonTransforms ();
         wheelRotated = true;
         currentSlot = 0;
+
+        // restart bot when app is started so that previous 
+        // conversations are overwritten
+        networkManager.SendMessageToRasa("/restart");
     }
 
     // Update is called once per frame
