@@ -117,7 +117,6 @@ public class SelectionWheel : MonoBehaviour {
     /// This coroutine rotates the selection wheel to current slot value
     /// </summary>
     /// <param name="targetRotation">the quaternion for correct rotation</param>
-    /// <returns></returns>
     private IEnumerator RotateSelectionWheel (Quaternion targetRotation) {
         isRotating = true;
         //Debug.Log("target rotation is : " + targetRotation.eulerAngles);

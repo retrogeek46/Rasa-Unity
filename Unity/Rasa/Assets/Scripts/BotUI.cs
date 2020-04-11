@@ -238,8 +238,8 @@ public class BotUI : MonoBehaviour {
     /// This method formats the message to be rendered on the bot ui so that each
     /// line is at max 50 characters.
     /// </summary>
-    /// <param name="message"></param>
-    /// <returns></returns>
+    /// <param name="message">The message to be formatted</param>
+    /// <returns>The formatted message</returns>
     private string FormatMessage (string message) {
         // init  variables
         string formatted_message = "";
@@ -272,10 +272,9 @@ public class BotUI : MonoBehaviour {
     }
 
     /// <summary>
-    /// 
+    /// This coroutine makes the chatbot UI window scroll down.
     /// </summary>
     /// <param name="direction">direction in which object will scroll. 0 for Down, 1 for Up</param>
-    /// <returns></returns>
     private IEnumerator ScrollAnimation (int direction) {
         RectTransform chatbotRectTransform = ChatbotUI.GetComponent<RectTransform>();
         print("scroll animation, direction is : " + direction + " chatbotrect values : " + chatbotRectTransform.offsetMax + ", " + chatbotRectTransform.offsetMin);
