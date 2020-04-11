@@ -48,3 +48,18 @@ class ActionPokemonQuery(Action):
         # show message to user
         dispatcher.utter_message(text=extra_info)
         return [UserUtteranceReverted()]
+
+
+class ActionDefaultFallback(Action):
+    """Mapped action for fallback"""
+
+    def name(self):
+        return "action_default_fallback"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        dispatcher.utter_message(text="Sorry I didn't understand that")
+
+        return []

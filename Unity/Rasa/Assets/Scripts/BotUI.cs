@@ -9,24 +9,31 @@ using UnityEngine.UI;
 /// </summary>
 public class BotUI : MonoBehaviour {
 
-    public static bool      botUIActive = false;                // bool to keep track of whether the bot should be shown or not
+    [Header("Chatbot GameObjects & References")]
     public GameObject       ChatbotUI;                          // reference to all canvas chatbot objects 
+    public GameObject       userBubble;                         // reference to user chat bubble prefab
+    public GameObject       botBubble;                          // reference to bot chat bubble prefab
+    public RuntimeAnimatorController    
+                            chatAnimatorController;             // reference to chat bubble animation controller
+    public NetworkManager   networkManager;                     // reference to Network Manager script
 
+    [Header("User Input GameObjects & References")]
     public GameObject       contentDisplayObject;               // Text gameobject where all the conversation is shown
     public InputField       inputField;                         // InputField gameobject wher user types their message
 
-    public GameObject       userBubble;                         // reference to user chat bubble prefab
-    public GameObject       botBubble;                          // reference to bot chat bubble prefab
+    [HideInInspector]
     public bool             renderingMessage;                   // bool to keep track of message while animation is running
-    public RuntimeAnimatorController    
-                            chatAnimatorController;            // reference to chat bubble animation controller
-
+    public static bool      botUIActive = false;                // bool to keep track of whether the bot should be shown or not
     private const int       messagePadding = 15;                // space between chat bubbles 
     private int             allMessagesHeight = messagePadding; // int to keep track of where next message should be rendered
-    public bool             increaseContentObjectHeight;        // bool to check if content object height should be increased
 
-    public NetworkManager   networkManager;                     // reference to Network Manager script
 
+    /// <summary>
+    /// This method recieves the array of messages from <see cref="NetworkManager.RecieveMessage(string)">
+    /// and prints them on botUI with an animation.
+    /// </summary>
+    /// <param name="recieveMessages">A list of messages received from the bot</param>
+    /// <returns></returns>
     public IEnumerator UnpackMessagesAfterDelay (RootMessages recieveMessages) {
         // show message based on message type on UI
         foreach (RecieveData message in recieveMessages.messages) {
@@ -41,13 +48,12 @@ public class BotUI : MonoBehaviour {
 
                 // print data
                 if (data != null && field.Name != "recipient_id") {
-
                     // Create chat bubble, add animator and reposition
                     GameObject chatBubbleChild = CreateChatBubble("bot");
                     AddChatComponent(chatBubbleChild, "", "animation");
                     StartCoroutine(SetChatBubblePosition(chatBubbleChild.transform.parent.GetComponent<RectTransform>(), "bot"));
                     
-                    // Add delay then remove animator and reposition
+                    // Add delay then remove animator and update message height counter
                     yield return new WaitForSeconds(2f);
                     allMessagesHeight -= messagePadding + (int)chatBubbleChild.transform.parent.GetComponent<RectTransform>().sizeDelta.y;
                     if (chatBubbleChild.GetComponent<Animator>() != null) {
@@ -266,13 +272,41 @@ public class BotUI : MonoBehaviour {
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="direction">direction in which object will scroll. 0 for Down, 1 for Up</param>
+    /// <returns></returns>
+    private IEnumerator ScrollAnimation (int direction) {
+        RectTransform chatbotRectTransform = ChatbotUI.GetComponent<RectTransform>();
+        print("scroll animation, direction is : " + direction + " chatbotrect values : " + chatbotRectTransform.offsetMax + ", " + chatbotRectTransform.offsetMin);
+
+        if (direction == 0) {
+            while (chatbotRectTransform.offsetMax.y > -175f) {
+                print("currently animating for dir 0");
+                print("chatbotrect values : " + chatbotRectTransform.offsetMax + ", " + chatbotRectTransform.offsetMin);
+                yield return new WaitForSeconds(0.01f);
+                chatbotRectTransform.offsetMax = new Vector2(chatbotRectTransform.offsetMax.x, chatbotRectTransform.offsetMax.y - 10f);
+            }
+        } else if (direction == 1) {
+            while (chatbotRectTransform.offsetMax.y < 675) {
+                print("currently animating for dir 1");
+                print("chatbotrect values : " + chatbotRectTransform.offsetMax + ", " + chatbotRectTransform.offsetMin);
+                yield return new WaitForSeconds(0.01f);
+                chatbotRectTransform.offsetMax = new Vector2(chatbotRectTransform.offsetMax.x, chatbotRectTransform.offsetMax.y - 10f);
+            }
+        }
+    }
+
+    /// <summary>
     /// If bot is online set input field active else inactive
     /// </summary>
     private void LateUpdate () {
         // show and hide chatbot
         if (botUIActive && !ChatbotUI.activeSelf) {
             ChatbotUI.SetActive(true);
+            StartCoroutine(ScrollAnimation(0));
         } else if (!botUIActive && ChatbotUI.activeSelf) {
+            StartCoroutine(ScrollAnimation(1));
             ChatbotUI.SetActive(false);
         }
 

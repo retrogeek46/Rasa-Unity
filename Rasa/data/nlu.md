@@ -13,6 +13,10 @@
 - [evolution](query)
 - [type](query)
 - [region](query)
+- [where](query:region) can I find it
+- [where](query:region) can I catch it
+- what is its [evolution](query) chain
+- what is its [type](query)
 
 ## intent:goodbye
 - bye

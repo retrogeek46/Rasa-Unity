@@ -10,18 +10,27 @@ using UnityEngine.Networking;
 /// </summary>
 public class NetworkManager : MonoBehaviour {
 
-    public bool botOnline = false;          // bool to check if bot is online    
-    public BotUI botUI;                     // reference to BotUI class
-    public float currentTime = 0f;          // float to keep track of current time
-    public float pollingTimeLimit = 5f;     // time after which polling should be done for bot status (seconds)
-    public GameObject botOfflineMessage;    // panel that shows bot offline message to user
+    [Header("Chatbot UI GameObjects & References")]
+    public BotUI            botUI;                                              // reference to BotUI class
+    public GameObject       botOfflineMessage;                                  // panel that shows bot offline message to user
+    
+    [Header("Network Parameters")]
+    public float            pollingTimeLimit = 5f;                              // time after which polling should be done for bot status (seconds)
+    
+    [HideInInspector]
+    public bool             botOnline = false;                                  // bool to check if bot is online    
+    [HideInInspector]
+    public float            currentTime = 0f;                                   // float to keep track of current time
+    
+    [SerializeField]
+    private string    rasa_webhook_url = 
+                                "http://localhost:5005/webhooks/rest/webhook";  // the url at which bot's custom connector is hosted
+    [SerializeField]
+    private string    rasa_url = "http://localhost:5005/";                // the url at which bot is polled to see if it is online
 
-    // the url at which bot's custom connector is hosted
-    private const string rasa_webhook_url = "http://localhost:5005/webhooks/rest/webhook";
-
-    // the url at which bot is polled to see if it is online
-    private const string rasa_url = "http://localhost:5005/";
-
+    /// <summary>
+    /// This method init's necessary variables and states
+    /// </summary>
     private void Start () {
         botOnline = false;
         StartCoroutine(CheckBotStatus());
@@ -126,7 +135,6 @@ public class NetworkManager : MonoBehaviour {
         }
     }
 
-
     /// <summary>
     /// This method updates the UI object with bot response
     /// </summary>
@@ -192,6 +200,10 @@ public class NetworkManager : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// This method polls the bot at regular (if bot UI is active) and shows a bot offline
+    /// message if bot is offline.
+    /// </summary>
     private void Update () {
         // increment current time with Time.deltaTime
         currentTime += Time.deltaTime;

@@ -7,16 +7,43 @@ TextureImporter:
     second: selectionWheel
   - first:
       213: 3559758036873292230
-    second: chatAnimation_0
+    second: chatAnimation_00
   - first:
       213: -188669160112314212
-    second: chatAnimation_1
+    second: chatAnimation_01
   - first:
       213: -8745714764721626062
-    second: chatAnimation_2
+    second: chatAnimation_02
   - first:
       213: 1372812266383383979
-    second: chatAnimation_3
+    second: chatAnimation_03
+  - first:
+      213: -7490327777822278750
+    second: chatAnimation_04
+  - first:
+      213: 3708209884387260111
+    second: chatAnimation_05
+  - first:
+      213: -3188063589297078354
+    second: chatAnimation_06
+  - first:
+      213: -639085048079331547
+    second: chatAnimation_07
+  - first:
+      213: 5896833999937370674
+    second: chatAnimation_08
+  - first:
+      213: -6053297140069271102
+    second: chatAnimation_09
+  - first:
+      213: -5869153556082856173
+    second: chatAnimation_10
+  - first:
+      213: 7836076940414400546
+    second: chatAnimation_11
+  - first:
+      213: 2712167511475468398
+    second: chatAnimation_12
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -146,13 +173,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: chatAnimation_0
+      name: chatAnimation_00
       rect:
         serializedVersion: 2
-        x: 835
-        y: 1059
-        width: 51
-        height: 21
+        x: 838
+        y: 1064
+        width: 40
+        height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -167,13 +194,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: chatAnimation_1
+      name: chatAnimation_01
       rect:
         serializedVersion: 2
-        x: 887
-        y: 1059
-        width: 51
-        height: 21
+        x: 885
+        y: 1064
+        width: 40
+        height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -188,13 +215,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: chatAnimation_2
+      name: chatAnimation_02
       rect:
         serializedVersion: 2
-        x: 939
-        y: 1059
-        width: 51
-        height: 21
+        x: 932
+        y: 1064
+        width: 40
+        height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -209,13 +236,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: chatAnimation_3
+      name: chatAnimation_03
       rect:
         serializedVersion: 2
-        x: 991
-        y: 1059
-        width: 51
-        height: 21
+        x: 979
+        y: 1064
+        width: 40
+        height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -225,6 +252,195 @@ TextureImporter:
       bones: []
       spriteID: 5a77455e61aa8fc45ae9d2943e571607
       internalID: 1372812266383383979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chatAnimation_04
+      rect:
+        serializedVersion: 2
+        x: 1026
+        y: 1064
+        width: 40
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1dd45933238c0b64e829b702b5f7f407
+      internalID: -7490327777822278750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chatAnimation_05
+      rect:
+        serializedVersion: 2
+        x: 1073
+        y: 1064
+        width: 40
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9940c78c9ce259c4bb9313590c529286
+      internalID: 3708209884387260111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chatAnimation_06
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 1064
+        width: 40
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ac7e3e327998ec4da3762590a910777
+      internalID: -3188063589297078354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chatAnimation_07
+      rect:
+        serializedVersion: 2
+        x: 1167
+        y: 1064
+        width: 40
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c8c897e1b62632a48aa50eee256ecb8f
+      internalID: -639085048079331547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chatAnimation_08
+      rect:
+        serializedVersion: 2
+        x: 1214
+        y: 1064
+        width: 40
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5b04e20b078970e439182905fe384ba9
+      internalID: 5896833999937370674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chatAnimation_09
+      rect:
+        serializedVersion: 2
+        x: 1261
+        y: 1064
+        width: 40
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e468efa5226b394094fc1c08546633e
+      internalID: -6053297140069271102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chatAnimation_10
+      rect:
+        serializedVersion: 2
+        x: 1308
+        y: 1064
+        width: 40
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 466c23419859d9846876ba4ca109e7bf
+      internalID: -5869153556082856173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chatAnimation_11
+      rect:
+        serializedVersion: 2
+        x: 1355
+        y: 1064
+        width: 40
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 58bad0c42d49929418e4508f13d40dde
+      internalID: 7836076940414400546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chatAnimation_12
+      rect:
+        serializedVersion: 2
+        x: 1402
+        y: 1064
+        width: 40
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d955a60f5463664289acceb82458206
+      internalID: 2712167511475468398
       vertices: []
       indices: 
       edges: []

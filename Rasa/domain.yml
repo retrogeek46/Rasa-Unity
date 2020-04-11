@@ -15,6 +15,7 @@ actions:
 - utter_greet
 - action_tell_pokemon_description
 - action_pokemon_query
+- action_default_fallback
 - utter_goodbye
 
 slots:
