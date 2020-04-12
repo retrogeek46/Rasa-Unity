@@ -277,23 +277,39 @@ public class BotUI : MonoBehaviour {
     /// <param name="direction">direction in which object will scroll. 0 for Down, 1 for Up</param>
     private IEnumerator ScrollAnimation (int direction) {
         RectTransform chatbotRectTransform = ChatbotUI.GetComponent<RectTransform>();
-        print("scroll animation, direction is : " + direction + " chatbotrect values : " + chatbotRectTransform.offsetMax + ", " + chatbotRectTransform.offsetMin);
+        //print("scroll animation, direction is : " + direction + " chatbotrect values : " + chatbotRectTransform.offsetMax + ", " + chatbotRectTransform.offsetMin);
 
         if (direction == 0) {
             while (chatbotRectTransform.offsetMax.y > -175f) {
-                print("currently animating for dir 0");
-                print("chatbotrect values : " + chatbotRectTransform.offsetMax + ", " + chatbotRectTransform.offsetMin);
                 yield return new WaitForSeconds(0.01f);
                 chatbotRectTransform.offsetMax = new Vector2(chatbotRectTransform.offsetMax.x, chatbotRectTransform.offsetMax.y - 10f);
             }
         } else if (direction == 1) {
             while (chatbotRectTransform.offsetMax.y < 675) {
-                print("currently animating for dir 1");
-                print("chatbotrect values : " + chatbotRectTransform.offsetMax + ", " + chatbotRectTransform.offsetMin);
                 yield return new WaitForSeconds(0.01f);
                 chatbotRectTransform.offsetMax = new Vector2(chatbotRectTransform.offsetMax.x, chatbotRectTransform.offsetMax.y - 10f);
             }
         }
+        ActivateInputField();
+    }
+
+    /// <summary>
+    /// This method checks if Enter key is pressed while input field is active and 
+    /// sends message if true
+    /// </summary>
+    public void Update () {
+        if (inputField.IsActive() && Input.GetKeyDown(KeyCode.Return)) {
+            networkManager.SendMessageToRasa();
+            ActivateInputField();
+        }
+    }
+
+    /// <summary>
+    /// This method sets input field in focus and activates it
+    /// </summary>
+    private void ActivateInputField () {
+        inputField.Select();
+        inputField.ActivateInputField();
     }
 
     /// <summary>

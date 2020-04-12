@@ -59,11 +59,11 @@ public class NetworkManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// This method is called when user has entered their message and hits the send button.
+    /// This method is called when a string is to be sent to the bot without user intervention.
     /// It calls the <see cref="NetworkManager.PostRequest(string, string)"> coroutine to send
     /// the user message to the bot without showing on UI.
     /// </summary>
-    /// <param name="message"></param>
+    /// <param name="message">The string that is to be sent as a message</param>
     public void SendMessageToRasa (string message) {
         // if user message is not empty, send message to bot
         if (message != "") {
