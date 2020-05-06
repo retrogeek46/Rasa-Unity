@@ -16,9 +16,10 @@ public class BotUI : MonoBehaviour {
     public RuntimeAnimatorController    
                             chatAnimatorController;             // reference to chat bubble animation controller
     public NetworkManager   networkManager;                     // reference to Network Manager script
+    public SelectionWheel   selectionWheel;                     // reference to Selection Wheel script
 
     [Header("User Input GameObjects & References")]
-    public GameObject       contentDisplayObject;               // Text gameobject where all the conversation is shown
+    public GameObject       contentDisplayObject;               // Gameobject where all the conversation is shown
     public InputField       inputField;                         // InputField gameobject wher user types their message
 
     [HideInInspector]
@@ -278,19 +279,39 @@ public class BotUI : MonoBehaviour {
     private IEnumerator ScrollAnimation (int direction) {
         RectTransform chatbotRectTransform = ChatbotUI.GetComponent<RectTransform>();
         //print("scroll animation, direction is : " + direction + " chatbotrect values : " + chatbotRectTransform.offsetMax + ", " + chatbotRectTransform.offsetMin);
-
+        //
         if (direction == 0) {
             while (chatbotRectTransform.offsetMax.y > -175f) {
                 yield return new WaitForSeconds(0.01f);
                 chatbotRectTransform.offsetMax = new Vector2(chatbotRectTransform.offsetMax.x, chatbotRectTransform.offsetMax.y - 10f);
             }
+            // activate input field and set focus after animation
+            ActivateInputField();
         } else if (direction == 1) {
             while (chatbotRectTransform.offsetMax.y < 675) {
                 yield return new WaitForSeconds(0.01f);
-                chatbotRectTransform.offsetMax = new Vector2(chatbotRectTransform.offsetMax.x, chatbotRectTransform.offsetMax.y - 10f);
+                chatbotRectTransform.offsetMax = new Vector2(chatbotRectTransform.offsetMax.x, chatbotRectTransform.offsetMax.y + 10f);
             }
+            // clear previous messages, hide chatbot UI after animation and activate pokemon selection wheel gameobjects
+            ClearChabotUIMessages();
+            ChatbotUI.SetActive(false);
+            selectionWheel.ReactivateSelectionWheelGameObjects();
         }
-        ActivateInputField();
+    }
+
+    /// <summary>
+    /// This method clears previous chatbot messages from UI and re-initializes necessary variables
+    /// </summary>
+    public void ClearChabotUIMessages () {
+        // reset hieght of all message objects
+        allMessagesHeight = messagePadding;
+        // delete all chatbubbles
+        foreach (GameObject botBubble in GameObject.FindGameObjectsWithTag("botBubble")) {
+            Destroy(botBubble.gameObject);
+        }
+        foreach (GameObject userBubble in GameObject.FindGameObjectsWithTag("userBubble")) {
+            Destroy(userBubble.gameObject);
+        }
     }
 
     /// <summary>
@@ -312,6 +333,10 @@ public class BotUI : MonoBehaviour {
         inputField.ActivateInputField();
     }
 
+    public void CloseChatbotUI () {
+        botUIActive = false;
+    }
+
     /// <summary>
     /// If bot is online set input field active else inactive
     /// </summary>
@@ -322,7 +347,6 @@ public class BotUI : MonoBehaviour {
             StartCoroutine(ScrollAnimation(0));
         } else if (!botUIActive && ChatbotUI.activeSelf) {
             StartCoroutine(ScrollAnimation(1));
-            ChatbotUI.SetActive(false);
         }
 
         // toggle input field based on whether bot is online

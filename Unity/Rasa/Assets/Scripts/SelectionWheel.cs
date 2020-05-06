@@ -114,6 +114,18 @@ public class SelectionWheel : MonoBehaviour {
     }
 
     /// <summary>
+    /// This method reactivates hidden pokemon selectionwheel gameobjects and sends restart message to chatbot
+    /// </summary>
+    public void ReactivateSelectionWheelGameObjects () {
+        // hide buttons, show pokemon in spotlight, shrink selection wheel
+        foreach (GameObject gameObjectToHide in gameObjectsToHide) {
+            gameObjectToHide.SetActive(true);
+        }
+        // restart the chatbot
+        networkManager.SendMessageToRasa("/restart");
+    }
+
+    /// <summary>
     /// This coroutine rotates the selection wheel to current slot value
     /// </summary>
     /// <param name="targetRotation">the quaternion for correct rotation</param>
@@ -125,5 +137,9 @@ public class SelectionWheel : MonoBehaviour {
             yield return new WaitForSeconds(0.01f);
         }
         isRotating = false;
+    }
+
+    public void PointerIsIn () {
+        Debug.Log("pointer in");
     }
 }
