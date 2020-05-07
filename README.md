@@ -22,6 +22,3 @@ Linux : `source venv/bin/activate`
 - Select the Unity project folder located in Rasa-Unity/Unity/Rasa.
 - Press play __after__ running the Rasa server.
 - Type your message and the bot should respond.
-
-## Bugs
-- Error if rasa server is not running, handle exception
