@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This class enables a scrolling background animation
+/// </summary>
 public class BackgroundScroll : MonoBehaviour {
 
     public float scrollSpeed = 0.5f;
     public Renderer bgRenderer;
-
-    // Start is called before the first frame update
-    void Start () {
-
-    }
 
     // Update is called once per frame
     void Update () {

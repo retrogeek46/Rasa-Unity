@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This singleton class contains methods to handle audio output
+/// </summary>
 public class AudioManager : MonoBehaviour {
 
     // singleton

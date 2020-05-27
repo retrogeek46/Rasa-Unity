@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Windows.Speech;
 
+/// <summary>
+/// This class contains methods and variables for STT service
+/// </summary>
 public class SpeechRecognition : MonoBehaviour {
 
     [Header("Gameobject References")]

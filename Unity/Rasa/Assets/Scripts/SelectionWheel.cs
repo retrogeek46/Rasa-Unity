@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This class helps in managing the scrolling function when selecting pokemons
+/// </summary>
 public class SelectionWheel : MonoBehaviour {
 
     [Header("SelectionWheel GameObjects & References")]
@@ -137,9 +140,5 @@ public class SelectionWheel : MonoBehaviour {
             yield return new WaitForSeconds(0.01f);
         }
         isRotating = false;
-    }
-
-    public void PointerIsIn () {
-        Debug.Log("pointer in");
     }
 }
